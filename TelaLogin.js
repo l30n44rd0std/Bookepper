@@ -19,7 +19,7 @@ function TelaLogin () {
   };
   const handleEntrarPress = () => {
     navigation.navigate('TelaInicial');
-  }
+  };
 
 return (
 
