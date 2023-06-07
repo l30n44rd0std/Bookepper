@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, StyleSheet } from 'react-native'; // Importe o StyleSheet do React Native
+
 
 import TelaPesquisa from './TelaPesquisa';
 import TelaPerfil from './TelaPerfil';
@@ -28,13 +30,29 @@ export default function TelaInicial () {
   };
 
   return (
-    <BottomNavigation
-      navigationState={{ index, routes }}
-      onIndexChange={setIndex}
-      renderScene={renderScene}
-      renderIcon={renderIcon}
-      barStyle={{ backgroundColor: '#1975D2' }}
-      activeColor="#FFFFFF"
-    />
+    <View style={styles.container}>
+        <View style={styles.innerContainer}>
+          <Text></Text>
+          <BottomNavigation
+          navigationState={{ index, routes }}
+          onIndexChange={setIndex}
+          renderScene={renderScene}
+          renderIcon={renderIcon}
+          barStyle={{ backgroundColor: '#1975D2' }}
+          activeColor="#FFFFFF"
+          />
+        </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#104C87',
+  },
+  innerContainer: {
+    flex: 1,
+    backgroundColor: '#1975D2',
+  },
+});

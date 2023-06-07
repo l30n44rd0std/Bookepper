@@ -17,9 +17,9 @@ const Tab = createMaterialBottomTabNavigator();
 function AuthStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="TelaLogin" component={TelaLogin} options={{ title: 'Login' }} />
-      <Stack.Screen name="TelaCriarConta" component={TelaCriarConta} options={{ title: 'Criar Conta' }} />
-      <Stack.Screen name="TelaInicial" component={TelaInicial} options={{ title: 'Tela Inicial' }} />
+      <Stack.Screen name="TelaLogin" component={TelaLogin} options={{headerShown: false}}  />
+      <Stack.Screen name="TelaCriarConta" component={TelaCriarConta} options={{headerShown: false}}  />
+      <Stack.Screen name="TelaInicial" component={TelaInicial} options={{headerShown: false}}  />
     </Stack.Navigator>
   );
 }
@@ -27,9 +27,9 @@ function AuthStack() {
 function AppTabs() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="TelaInicial" component={TelaInicial} options={{ title: 'Tela Inicial' }} />
-      <Tab.Screen name="TelaPesquisa" component={TelaPesquisa} options={{ title: 'Tela de Pesquisa' }} />
-      <Tab.Screen name="TelaPerfil" component={TelaPerfil} options={{ title: 'Tela de Perfil do Usuário' }} />
+      <Tab.Screen name="TelaInicial" component={TelaInicial} options={{headerShown: false}} />
+      <Tab.Screen name="TelaPesquisa" component={TelaPesquisa} options={{headerShown: false}} />
+      <Tab.Screen name="TelaPerfil" component={TelaPerfil} options={{headerShown: false}} />
     </Tab.Navigator>
   );
 }
@@ -55,9 +55,9 @@ export default function App() {
     <NavigationContainer>
       {isAuthenticated ? (
         <AppTabs />
-      ) : (
-        <AuthStack />
-      )}
+        ) : (
+          <AuthStack />
+          )}
     </NavigationContainer>
   );
 }
