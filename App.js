@@ -11,8 +11,8 @@ import TelaInicial from './src/pages/TelaInicial';
 import TelaPesquisa from './src/pages/TelaPesquisa';
 import TelaPerfil from './src/pages/TelaPerfil';
 
-const Stack = createNativeStackNavigator();
-const Tab = createMaterialBottomTabNavigator();
+// const Stack = createNativeStackNavigator();
+// const Tab = createMaterialBottomTabNavigator();
 
 function AuthStack() {
   return (
@@ -24,32 +24,26 @@ function AuthStack() {
   );
 }
 
-function AppTabs() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="TelaInicial" component={TelaInicial} options={{headerShown: false}} />
-      <Tab.Screen name="TelaPesquisa" component={TelaPesquisa} options={{headerShown: false}} />
-      <Tab.Screen name="TelaPerfil" component={TelaPerfil} options={{headerShown: false}} />
-    </Tab.Navigator>
-  );
-}
+// function AppTabs() {
+//   return (
+//     <Tab.Navigator>
+//       <Tab.Screen name="TelaInicial" component={TelaInicial} options={{headerShown: false}} />
+//       <Tab.Screen name="TelaPesquisa" component={TelaPesquisa} options={{headerShown: false}} />
+//       <Tab.Screen name="TelaPerfil" component={TelaPerfil} options={{headerShown: false}} />
+//     </Tab.Navigator>
+//   );
+// }
 
-export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+// export default function App() {
+//   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
-  // Função para definir o estado de autenticação
-  const handleAuthStateChanged = (authenticated) => {
-    setIsAuthenticated(authenticated);
-  };
+//   const handleAuthStateChanged = (authenticated) => {
+//     setIsAuthenticated(authenticated);
+//   };
 
-  React.useEffect(() => {
-    // Verificar o estado de autenticação aqui
-    // Se o usuário estiver autenticado, definir isAuthenticated como true
-    // Caso contrário, definir como false
-    // Por exemplo:
-    // const authenticated = checkAuthentication();
-    // handleAuthStateChanged(authenticated);
-  }, []);
+//   React.useEffect(() => {
+
+//   }, []);
 
   return (
     <NavigationContainer>
@@ -59,6 +53,7 @@ export default function App() {
           <AuthStack />
           )}
     </NavigationContainer>
+    <Routes />
   );
 }
 
