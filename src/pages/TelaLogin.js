@@ -18,16 +18,17 @@ function TelaLogin () {
     navigation.navigate('TelaCriarConta');
   };
   const handleEntrarPress = () => {
-    navigation.navigate('TelaInicial');
+    console.log('handleEntrarPress')
+    navigation.navigate('Home');
   };
 
 return (
 
   <View style={styles.container}>
-      <Image
+      {/* <Image
         style={styles.icon}
-        source={require('./icons/bookepper.png')}
-      />
+        source={require('../../icons/bookepper.png')}
+      /> */}
       <Text style={styles.title}>Bookeeper</Text>
       <Text style={styles.subtitle}>Organize suas leituras com Bookepper!</Text>
 
@@ -61,7 +62,7 @@ return (
     </View>
 
 );
-};
+}
 
 const styles = StyleSheet.create({
   icon: {
