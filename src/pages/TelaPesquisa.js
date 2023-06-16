@@ -1,42 +1,50 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Button, Image } from 'react-native';
+import { View, Text, TextInput, Button, Image, FlatList, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function TelaPesquisa() {
-  //query - armazena o valor digitado pelo usuário no campo de entrada de texto, parâmetro para a consulta à API
+const TelaPesquisa = () => {
   const [query, setQuery] = useState('');
   const [bookData, setBookData] = useState(null);
-  const [totalBookData, setTotalBookData] = useState('');
+  const [totalResults, setTotalResults] = useState(0);
 
-  const resultadoTotalLivros = () => {
-    const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${query}`;
-    fetch(apiUrl)
-    .then((response) => response.json())
-    .then((totalBookData) => {
-      if (totalBookData.totalItems && totalBookData.totalItems.length > 0) {
-        const resultTotalBooks = totalBookData.totalItems;
-        setTotalBookData(resultTotalBooks);
-      } else {
-        setTotalBookData('');
-      }
-    })
-    .catch((error) => console.log(error));
-  }
-
-  const pesquisarLivros = () => {
+  
+  const searchBooks = () => {
     const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${query}`;
 
     fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
         if (data.items && data.items.length > 0) {
-          const book = data.items[0].volumeInfo;
-          setBookData(book);
+          const books = data.items.map((item) => item.volumeInfo);
+          setBookData(books);
+          setTotalResults(data.totalItems);
         } else {
-          setBookData(null);
+          setBookData([]);
+          setTotalResults(0);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
+
+  const navigation = useNavigation();
+
+  const handleBookPress = (book) => {
+    console.log('handleBookPress')
+    navigation.navigate('DetalhesLivro', { book });
+  };
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity key={item.id} onPress={() => handleBookPress(item)}>
+      <View style={{ marginBottom: 16 }}>
+        <Image
+          source={{ uri: item.imageLinks?.thumbnail }}
+          style={{ width: 200, height: 300 }}
+        />
+        <Text>{item.title}</Text>
+        <Text>Autor: {item.authors?.join(', ')}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -45,23 +53,19 @@ export default function TelaPesquisa() {
         value={query}
         onChangeText={setQuery}
       />
-      <Button title="Buscar" onPress={pesquisarLivros}/>
+      <Button title="Buscar" onPress={searchBooks} />
       {bookData && (
-        <View>
-          <Text>Resultados encontrados: {totalBookData.totalItems}</Text>
-          <Image
-            source={{ uri: bookData.imageLinks?.thumbnail }}
-            style={{ width: 200, height: 300 }}
-          />
-          <Text>{bookData.title}</Text>
-          <Text>Autor: {bookData.authors?.join(', ')}</Text>
-          <Text>Descrição: {bookData.description}</Text>
-          <Text>Data de publicação: {bookData.publishedDate}</Text>
-          <Text>ISBN: {bookData.industryIdentifiers?.join(', ').identifier}</Text>
-          <Text>Número de páginas: {bookData.pageCount}</Text>
-          <Text>Categorias: {bookData.categories}</Text>
-        </View>
+        <FlatList
+          data={bookData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={() => (
+            <Text>Nenhum livro encontrado.</Text>
+          )}
+        />
       )}
     </View>
-  )
-}
+  );
+};
+
+export default TelaPesquisa;
