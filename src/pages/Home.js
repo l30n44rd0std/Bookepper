@@ -8,9 +8,9 @@ const Home = () => {
   
     return (
         <Tab.Navigator>
-          <Tab.Screen name="Início" component={TelaInicial} />
-          <Tab.Screen name="Pesquisa" component={TelaPesquisa} />
-          <Tab.Screen name="Perfil" component={TelaPerfil} />
+          <Tab.Screen name="Início" component={TelaInicial} options={{ headerShown: false }}/>
+          <Tab.Screen name="Pesquisa" component={TelaPesquisa} options={{ headerShown: false }}/>
+          <Tab.Screen name="Perfil" component={TelaPerfil} options={{ headerShown: false }}/>
         </Tab.Navigator>
     );
   

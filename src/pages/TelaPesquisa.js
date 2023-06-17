@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { StatusBar } from 'react-native';
 import { View, Text, TextInput, Button, Image, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -33,7 +34,15 @@ const TelaPesquisa = () => {
     navigation.navigate('DetalhesLivro', { book });
   };
 
+  // let imageSource;
+  // if (item.imageLinks && item.imageLinks.thumbnail) {
+  //   imageSource = { uri: item.imageLinks.thumbnail };
+  // } else {
+  //   imageSource = require('');
+  // }
+
   const renderItem = ({ item }) => (
+
     <TouchableOpacity key={item.id} onPress={() => handleBookPress(item)}>
       <View style={{ marginBottom: 16 }}>
         <Image
@@ -48,6 +57,7 @@ const TelaPesquisa = () => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <StatusBar style="auto"/>
       <TextInput
         placeholder="Digite o título do livro"
         value={query}

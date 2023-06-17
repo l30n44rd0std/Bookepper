@@ -7,6 +7,7 @@ import Home from '../pages/Home';
 import TelaPesquisa from '../pages/TelaPesquisa';
 import TelaPerfil from '../pages/TelaPerfil';
 import DetalhesLivro from '../pages/DetalhesLivro';
+import BibliotecaPessoal from '../pages/BibliotecaPessoal';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ const EntradaStack = () => {
       <Stack.Screen name="TelaPesquisa" component={TelaPesquisa} options={{ headerShown: false }} />
       <Stack.Screen name="TelaPerfil" component={TelaPerfil} options={{ headerShown: false }} />
       <Stack.Screen name="DetalhesLivro" component={DetalhesLivro} options={{ title: 'Informações do livro' }}/>
+      <Stack.Screen name="BibliotecaPessoal" component={BibliotecaPessoal} />
     </Stack.Navigator>
   );
 };
