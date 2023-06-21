@@ -33,10 +33,17 @@ const DetalhesLivro = ({ route }) => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Image
-          source={{ uri: book.imageLinks?.thumbnail }}
-          style={styles.coverImage}
-        />
+        {book.imageLinks && book.imageLinks.thumbnail ? (
+          <Image
+            source={{ uri: book.imageLinks.thumbnail }}
+            style={styles.coverImage}
+          />
+        ) : (
+          <Image
+            source={require('../icons/imagem-de-capa-indisponivel.png')}
+            style={styles.coverImage}
+          />
+        )}
         <Text style={styles.title}>{book.title}</Text>
         <Text style={styles.author}>Autor: {book.authors?.join(', ')}</Text>
         <Text style={styles.description}>{book.description}</Text>

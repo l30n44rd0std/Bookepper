@@ -45,10 +45,17 @@ const TelaPesquisa = () => {
 
     <TouchableOpacity key={item.id} onPress={() => handleBookPress(item)}>
       <View style={{ marginBottom: 16 }}>
+      {item.imageLinks && item.imageLinks.thumbnail ? (
         <Image
-          source={{ uri: item.imageLinks?.thumbnail }}
+          source={{ uri: item.imageLinks.thumbnail }}
           style={{ width: 200, height: 300 }}
         />
+      ) : (
+        <Image
+          source={require('../icons/imagem-de-capa-indisponivel.png')}
+          style={{ width: 200, height: 300 }}
+        />
+      )}
         <Text>{item.title}</Text>
         <Text>Autor: {item.authors?.join(', ')}</Text>
       </View>
@@ -68,7 +75,7 @@ const TelaPesquisa = () => {
         <FlatList
           data={bookData}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(items) => items.id}
           ListEmptyComponent={() => (
             <Text>Nenhum livro encontrado.</Text>
           )}
