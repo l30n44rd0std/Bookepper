@@ -1,13 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, Linking, Button, Modal, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const DetalhesLivro = ({ route }) => {
-  const { book } = route.params;
+
+  const [ book, setBook] = useState(route.params?.book || null)
+
+  const { googleId } = route.params;
+
   const [showDialog, setShowDialog] = useState(false);
   const [readingStatus, setReadingStatus] = useState('');
-  const [libraryBooks, setLibraryBooks] = useState([]); // Estado para armazenar a lista de livros na biblioteca pessoal
+  
+  useEffect(() => {
+    const loadLivro = () => {
+      const apiUrl = `https://www.googleapis.com/books/v1/volumes/${googleId}`;
+  
+      fetch(apiUrl)
+        .then((response) => response.json())
+        .then((dataLivro) => {
+          setBook(dataLivro);
+        })
+        .catch((error) => console.error(error));
+    };
+    if(!book)
+      loadLivro();
+  }, [googleId])
 
   const handleAmazonLink = () => {
     const formattedTitle = book.title.replace(/ /g, '+');
@@ -16,18 +34,25 @@ const DetalhesLivro = ({ route }) => {
     Linking.openURL(amazonLink);
   };
 
-  const handleAddToLibrary = (status) => {
+  const handleAddToLibrary = async (status) => {
     setShowDialog(false);
     setReadingStatus(status);
 
     // Adicione o livro à lista da biblioteca pessoal
     const newBook = {
-      status,
-      title: book.title,
-      image: book.imageLinks?.thumbnail,
+        titulo: book.volumeInfo.title,
+        resenha: book.volumeInfo.description,
+        imagem_capa: book.imageLinks.thumbnail,
+        usuario_id: 1,
+        google_id:book.id,
+        status: status
     };
 
-    setLibraryBooks((prevLibraryBooks) => [...prevLibraryBooks, newBook]);
+    const livroAdicionado = await fetch('https://api-backend-bd-tarde.onrender.com/bookeeper/usuario/livro', { 
+      method: POST,
+      body: newBook
+    });
+
   };
 
   return (

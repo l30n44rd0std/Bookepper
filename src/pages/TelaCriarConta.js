@@ -45,10 +45,10 @@ export default function TelaCriarConta() {
 
   return (
     <View style={styles.container}>
-      {/* <Image
+      <Image
         style={styles.icon}
-        source={require('./icons/bookepper.png')}
-      /> */}
+        source={require('../icons/bookepper.png')}
+      />
       <Text style={styles.title}>Crie sua conta</Text>
       <Text style={styles.subtitle}>Transforme sua leitura com o Bookeeper!</Text>
 

@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import TelaLogin from '../pages/TelaLogin';
 import TelaCriarConta from '../pages/TelaCriarConta';
-import Home from '../pages/Home';
+import Home from '../pages/BottomTabNavigator';
 import TelaPesquisa from '../pages/TelaPesquisa';
 import TelaPerfil from '../pages/TelaPerfil';
 import DetalhesLivro from '../pages/DetalhesLivro';

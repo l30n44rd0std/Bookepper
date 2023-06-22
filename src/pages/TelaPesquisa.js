@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { StatusBar } from 'react-native';
-import { View, Text, TextInput, Button, Image, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, Button, Image, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { Appbar, TextInput } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const TelaPesquisa = () => {
   const [query, setQuery] = useState('');
   const [bookData, setBookData] = useState(null);
   const [totalResults, setTotalResults] = useState(0);
-
   
   const searchBooks = () => {
     const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${query}`;
@@ -31,7 +32,7 @@ const TelaPesquisa = () => {
 
   const handleBookPress = (book) => {
     console.log('handleBookPress')
-    navigation.navigate('DetalhesLivro', { book });
+    navigation.navigate('DetalhesLivro', { book, googleId: book.id });
   };
 
   // let imageSource;
@@ -63,26 +64,49 @@ const TelaPesquisa = () => {
   );
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <>
       <StatusBar style="auto"/>
-      <TextInput
-        placeholder="Digite o título do livro"
-        value={query}
-        onChangeText={setQuery}
-      />
-      <Button title="Buscar" onPress={searchBooks} />
-      {bookData && (
-        <FlatList
-          data={bookData}
-          renderItem={renderItem}
-          keyExtractor={(items) => items.id}
-          ListEmptyComponent={() => (
-            <Text>Nenhum livro encontrado.</Text>
-          )}
+
+      <Appbar.Header style={{ backgroundColor: '#1975D2' }}>
+        <Text style={{ fontSize: 30, fontWeight: 'bold' }}>Explorar</Text>
+      </Appbar.Header>
+
+        <TextInput
+          placeholder="Digite o título do livro"
+          mode="outlined"
+          style={styles.input}
+          left={<TextInput.Icon name={() => <MaterialCommunityIcons name="magnify" />} color="white" />}          value={query}
+          onChangeText={setQuery}
         />
-      )}
-    </View>
+        <Button title="Buscar" onPress={searchBooks} />
+
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', textColor:'#FFFFFFF', }}>
+        {bookData && (
+          <FlatList
+            data={bookData}
+            renderItem={renderItem}
+            keyExtractor={(items) => items.id}
+            ListEmptyComponent={() => (
+              <Text>Nenhum livro encontrado.</Text>
+            )}
+          />
+        )}
+      </View>
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  input: {
+    borderRadius: 5,
+    marginBottom: 15,
+    placeholder: '#1F1F1F',
+    placeholderTextColor: '#1F1F1F',
+    textColor:'#1F1F1F',
+    color: '#1F1F1F',
+    backgroundColor:'#7BAFE3'
+  },
+});
+
 
 export default TelaPesquisa;

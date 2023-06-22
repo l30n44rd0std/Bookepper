@@ -25,10 +25,10 @@ function TelaLogin () {
 return (
 
   <View style={styles.container}>
-      {/* <Image
+      <Image
         style={styles.icon}
-        source={require('../../icons/bookepper.png')}
-      /> */}
+        source={require('../icons/bookepper.png')}
+      />
       <Text style={styles.title}>Bookeeper</Text>
       <Text style={styles.subtitle}>Organize suas leituras com Bookepper!</Text>
 
