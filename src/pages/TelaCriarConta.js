@@ -6,65 +6,29 @@ export default function TelaCriarConta() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [file, setFile] = useState(null);
-
-  const handleNomeChange = (nome) => {
-    setNome(nome);
-  };
-
-  const handleEmailChange = (email) => {
-    setEmail(email);
-  };
-
-  const handleSenhaChange = (senha) => {
-    setSenha(senha);
-  };
-
-  const handleSubmit = () => {
-    console.log(`Nome: ${nome}, Email: ${email}, Senha: ${senha}`);
-  };
-
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (status !== "granted") {
-      alert("Permissão para acessar a galeria negada");
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setFile(result.uri);
-    }
-  };
 
   return (
     <View style={styles.container}>
-      <Image style={styles.icon} source={require("../icons/bookepper.png")} />
-      <Text style={styles.title}>Crie sua conta</Text>
-      <Text style={styles.subtitle}>
+      <Image style={styles.icone} source={require("../icons/bookepper.png")} />
+      <Text style={styles.titulo}>Crie sua conta</Text>
+      <Text style={styles.subtitulo}>
         Transforme sua leitura com o Bookeeper!
       </Text>
 
-      <View style={styles.form}>
+      <View style={styles.formulario}>
         <TextInput
           label="Nome"
           placeholder="Digite seu nome"
           value={nome}
           style={styles.input}
-          onChangeText={handleNomeChange}
+          onChangeText={setNome}
         />
         <TextInput
           label="E-mail"
           placeholder="Digite seu e-mail"
           value={email}
           style={styles.input}
-          onChangeText={handleEmailChange}
+          onChangeText={setEmail}
         />
         <TextInput
           label="Senha"
@@ -72,17 +36,11 @@ export default function TelaCriarConta() {
           value={senha}
           secureTextEntry={true}
           style={styles.input}
-          onChangeText={handleSenhaChange}
+          onChangeText={setSenha}
         />
       </View>
 
-      <Button
-        mode="contained"
-        uppercase=""
-        color="#4E0189"
-        style={styles.button}
-        onPress={handleSubmit}
-      >
+      <Button mode="contained" style={styles.botao}> //add onPress={}
         Cadastrar
       </Button>
     </View>
@@ -90,7 +48,7 @@ export default function TelaCriarConta() {
 }
 
 const styles = StyleSheet.create({
-  icon: {
+  icone: {
     width: 100,
     height: 100,
   },
@@ -101,20 +59,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 20,
   },
-  title: {
+  titulo: {
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 30,
     color: "#FFFFFF",
   },
-  subtitle: {
+  subtitulo: {
     fontSize: 10,
     opacity: 0.6,
     textAlign: "center",
     marginBottom: 20,
     color: "#FFFFFF",
   },
-  form: {
+  formulario: {
     width: "80%",
   },
   input: {
@@ -126,7 +84,9 @@ const styles = StyleSheet.create({
     color: "#1F1F1F",
     backgroundColor: "#7BAFE3",
   },
-  button: {
+  botao: {
+    uppercase: "",
+    color:"#4E0189",
     backgroundColor: "#104C87",
     borderRadius: 8,
     height: 50,

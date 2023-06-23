@@ -1,13 +1,15 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 
+//import para bottom tab - barra inferior que possui "início", "pesquisa" e "perfil"
+import BottomTabNavigator from "./BottomTabNavigator.js";
+
+//import de cada tela
 import TelaLogin from "../pages/TelaLogin";
 import TelaCriarConta from "../pages/TelaCriarConta";
-import Home from "../pages/BottomTabNavigator";
 import TelaPesquisa from "../pages/TelaPesquisa";
 import TelaPerfil from "../pages/TelaPerfil";
-import DetalhesLivro from "../pages/DetalhesLivro";
-import BibliotecaPessoal from "../pages/BibliotecaPessoal";
+import TelaDetalhesLivro from "../pages/TelaDetalhesLivro";
+import TelaBibliotecaPessoal from "../pages/TelaBibliotecaPessoal";
 
 const Stack = createStackNavigator();
 
@@ -21,8 +23,8 @@ const EntradaStack = () => {
       />
       <Stack.Screen name="TelaCriarConta" component={TelaCriarConta} />
       <Stack.Screen
-        name="Home"
-        component={Home}
+        name="BottomTabNavigator"
+        component={BottomTabNavigator}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -36,41 +38,26 @@ const EntradaStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="DetalhesLivro"
-        component={DetalhesLivro}
+        name="TelaDetalhesLivro"
+        component={TelaDetalhesLivro}
         options={{ title: "Informações do livro" }}
       />
-      <Stack.Screen name="BibliotecaPessoal" component={BibliotecaPessoal} />
+      <Stack.Screen
+        name="TelaBibliotecaPessoal"
+        component={TelaBibliotecaPessoal}
+      />
     </Stack.Navigator>
   );
 };
 
-// const PrincipaisStack = () => {
-//   return (
-//       <Tab.Navigator>
-//         <Tab.Screen name="Início" component={TelaInicial} />
-//         <Tab.Screen name="Pesquisa" component={TelaPesquisa} />
-//         <Tab.Screen name="Perfil" component={TelaPerfil} />
-//       </Tab.Navigator>
-//   );
-// };
-
-const AppNavigator = ({ isLoggedIn = false }) => {
+const AppNavigator = () => {
   return (
     <Stack.Navigator>
-      {isLoggedIn ? (
-        <Stack.Screen
-          name="PrincipaisStack"
-          component={PrincipaisStack}
-          options={{ headerShown: false }}
-        />
-      ) : (
         <Stack.Screen
           name="EntradaStack"
           component={EntradaStack}
           options={{ headerShown: false }}
         />
-      )}
     </Stack.Navigator>
   );
 };

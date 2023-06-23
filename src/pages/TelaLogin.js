@@ -3,32 +3,29 @@ import { View, StyleSheet, Text, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { TextInput, Button } from "react-native-paper";
 
-function TelaLogin() {
+export default function TelaLogin() {
+ 
+  //criando estados p/ e-mail e senha
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [senha, setSenha] = useState("");
 
-  const toggleSecureEntry = () => {
-    setSecureTextEntry(!secureTextEntry);
-  };
-
+  //navegação p/ outras telas
   const navigation = useNavigation();
 
-  const handleCriarContaPress = () => {
+  const navegarParaTelaCriarConta = () => {
     navigation.navigate("TelaCriarConta");
   };
-  const handleEntrarPress = () => {
-    console.log("handleEntrarPress");
-    navigation.navigate("Home");
+  const navegarParaTelaInicial = () => {
+    navigation.navigate("BottomTabNavigator");
   };
 
   return (
     <View style={styles.container}>
-      <Image style={styles.icon} source={require("../icons/bookepper.png")} />
-      <Text style={styles.title}>Bookeeper</Text>
-      <Text style={styles.subtitle}>Organize suas leituras com Bookepper!</Text>
+      <Image style={styles.icone} source={require("../icons/bookepper.png")} />
+      <Text style={styles.titulo}>Bookeeper</Text>
+      <Text style={styles.subtitulo}>Organize suas leituras com Bookepper!</Text>
 
-      <View style={styles.form}>
+      <View style={styles.formulario}>
         <TextInput
           label="E-mail"
           value={email}
@@ -37,23 +34,17 @@ function TelaLogin() {
         />
         <TextInput
           label="Senha"
-          value={password}
-          onChangeText={setPassword}
-          right={
-            <TextInput.Icon
-              name={secureTextEntry ? "eye" : "eye-off"}
-              onPress={toggleSecureEntry}
-            />
-          }
+          value={senha}
+          onChangeText={setSenha}
           style={styles.input}
-          secureTextEntry={secureTextEntry}
+          secureTextEntry //oculta o que é digitado
+          right={<TextInput.Icon name="eye" />}
         />
 
         <Button
           mode="contained"
-          uppercase=""
-          style={styles.button}
-          onPress={handleEntrarPress}
+          style={styles.botao}
+          onPress={navegarParaTelaInicial}
         >
           {" "}
           Entrar
@@ -61,12 +52,10 @@ function TelaLogin() {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Não tem uma conta?</Text>
+        <Text style={styles.textoAbaixoDoBotao}>Não tem uma conta?</Text>
         <Button
-          uppercase=""
-          color="#FFFFFF"
-          onPress={handleCriarContaPress}
-          style={styles.footerLink}
+          onPress={navegarParaTelaCriarConta}
+          style={styles.textoLinkCriarConta}
         >
           Criar Conta
         </Button>
@@ -76,10 +65,11 @@ function TelaLogin() {
 }
 
 const styles = StyleSheet.create({
-  icon: {
+  icone: {
     width: 100,
     height: 100,
   },
+
   container: {
     flex: 1,
     justifyContent: "center",
@@ -87,14 +77,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#1975D2",
   },
 
-  title: {
+  titulo: {
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 30,
     color: "#FFFFFF",
   },
 
-  subtitle: {
+  subtitulo: {
     fontSize: 10,
     opacity: 0.6,
     textAlign: "center",
@@ -102,7 +92,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
 
-  form: {
+  formulario: {
     width: "80%",
   },
 
@@ -116,20 +106,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#7BAFE3",
   },
 
-  button: {
+  botao: {
+    uppercase:"",
     backgroundColor: "#104C87",
     borderRadius: 5,
     marginBottom: 15,
   },
-  footerText: {
+  textoAbaixoDoBotao: {
     color: "#fffffffff",
   },
-  footerLink: {
+  textoLinkCriarConta: {
     color: "#4E0189",
     marginTop: 0.5,
     fontWeight: "bold",
     textAlign: "center",
   },
 });
-
-export default TelaLogin;
