@@ -1,21 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, Linking, Button, Modal, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { ScrollView } from 'react-native-gesture-handler';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Linking,
+  Button,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { ScrollView } from "react-native-gesture-handler";
 
 const DetalhesLivro = ({ route }) => {
-
-  const [ book, setBook] = useState(route.params?.book || null)
+  const [book, setBook] = useState(route.params?.book || null);
 
   const { googleId } = route.params;
 
   const [showDialog, setShowDialog] = useState(false);
-  const [readingStatus, setReadingStatus] = useState('');
-  
+  const [readingStatus, setReadingStatus] = useState("");
+
   useEffect(() => {
     const loadLivro = () => {
       const apiUrl = `https://www.googleapis.com/books/v1/volumes/${googleId}`;
-  
+
       fetch(apiUrl)
         .then((response) => response.json())
         .then((dataLivro) => {
@@ -23,12 +31,11 @@ const DetalhesLivro = ({ route }) => {
         })
         .catch((error) => console.error(error));
     };
-    if(!book)
-      loadLivro();
-  }, [googleId])
+    if (!book) loadLivro();
+  }, [googleId]);
 
   const handleAmazonLink = () => {
-    const formattedTitle = book.title.replace(/ /g, '+');
+    const formattedTitle = book.title.replace(/ /g, "+");
     const amazonLink = `https://www.amazon.com.br/s?k=${formattedTitle}`;
 
     Linking.openURL(amazonLink);
@@ -40,19 +47,21 @@ const DetalhesLivro = ({ route }) => {
 
     // Adicione o livro à lista da biblioteca pessoal
     const newBook = {
-        titulo: book.volumeInfo.title,
-        resenha: book.volumeInfo.description,
-        imagem_capa: book.imageLinks.thumbnail,
-        usuario_id: 1,
-        google_id:book.id,
-        status: status
+      titulo: book.volumeInfo.title,
+      resenha: book.volumeInfo.description,
+      imagem_capa: book.imageLinks.thumbnail,
+      usuario_id: 1,
+      google_id: book.id,
+      status: status,
     };
 
-    const livroAdicionado = await fetch('https://api-backend-bd-tarde.onrender.com/bookeeper/usuario/livro', { 
-      method: POST,
-      body: newBook
-    });
-
+    const livroAdicionado = await fetch(
+      "https://api-backend-bd-tarde.onrender.com/bookeeper/usuario/livro",
+      {
+        method: POST,
+        body: newBook,
+      }
+    );
   };
 
   return (
@@ -65,12 +74,12 @@ const DetalhesLivro = ({ route }) => {
           />
         ) : (
           <Image
-            source={require('../icons/imagem-de-capa-indisponivel.png')}
+            source={require("../icons/imagem-de-capa-indisponivel.png")}
             style={styles.coverImage}
           />
         )}
         <Text style={styles.title}>{book.title}</Text>
-        <Text style={styles.author}>Autor: {book.authors?.join(', ')}</Text>
+        <Text style={styles.author}>Autor: {book.authors?.join(", ")}</Text>
         <Text style={styles.description}>{book.description}</Text>
 
         <Text style={styles.label}>Editora:</Text>
@@ -83,7 +92,7 @@ const DetalhesLivro = ({ route }) => {
         <Text>{book.industryIdentifiers?.[0]?.identifier}</Text>
 
         <Text style={styles.label}>Categoria:</Text>
-        <Text>{book.categories?.join(', ')}</Text>
+        <Text>{book.categories?.join(", ")}</Text>
 
         <Text style={styles.label}>Avaliações:</Text>
         <Text>{book.averageRating}</Text>
@@ -91,10 +100,7 @@ const DetalhesLivro = ({ route }) => {
         <Text style={styles.label}>Número de páginas:</Text>
         <Text>{book.pageCount}</Text>
 
-        <Button
-          title="Ver na loja da Amazon"
-          onPress={handleAmazonLink}
-        />
+        <Button title="Ver na loja da Amazon" onPress={handleAmazonLink} />
 
         <TouchableOpacity
           style={styles.addButton}
@@ -111,24 +117,26 @@ const DetalhesLivro = ({ route }) => {
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Adicionar Livro na Biblioteca Pessoal</Text>
+              <Text style={styles.modalTitle}>
+                Adicionar Livro na Biblioteca Pessoal
+              </Text>
               <Text style={styles.modalSubtitle}>Status da leitura:</Text>
               <View style={styles.modalButtons}>
                 <Button
                   title="Já li"
-                  onPress={() => handleAddToLibrary('Já li')}
+                  onPress={() => handleAddToLibrary("Já li")}
                 />
                 <Button
                   title="Lendo"
-                  onPress={() => handleAddToLibrary('Lendo')}
+                  onPress={() => handleAddToLibrary("Lendo")}
                 />
                 <Button
                   title="Quero Ler"
-                  onPress={() => handleAddToLibrary('Quero Ler')}
+                  onPress={() => handleAddToLibrary("Quero Ler")}
                 />
                 <Button
                   title="Abandonado"
-                  onPress={() => handleAddToLibrary('Abandonado')}
+                  onPress={() => handleAddToLibrary("Abandonado")}
                 />
               </View>
             </View>
@@ -144,7 +152,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   coverImage: {
     width: 200,
@@ -153,7 +161,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   author: {
@@ -166,29 +174,29 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 8,
   },
   addButton: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     borderRadius: 50,
     width: 56,
     height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
     bottom: 24,
     right: 24,
     elevation: 2,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 16,
     borderRadius: 8,
     elevation: 5,
@@ -196,7 +204,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   modalSubtitle: {
@@ -204,8 +212,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 16,
   },
 });

@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { useState } from "react";
+import { StyleSheet, Text, View, Image } from "react-native";
+import { TextInput, Button } from "react-native-paper";
 
 export default function TelaCriarConta() {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
   const [file, setFile] = useState(null);
 
   const handleNomeChange = (nome) => {
@@ -27,8 +27,8 @@ export default function TelaCriarConta() {
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (status !== 'granted') {
-      alert('Permissão para acessar a galeria negada');
+    if (status !== "granted") {
+      alert("Permissão para acessar a galeria negada");
       return;
     }
 
@@ -45,15 +45,13 @@ export default function TelaCriarConta() {
 
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.icon}
-        source={require('../icons/bookepper.png')}
-      />
+      <Image style={styles.icon} source={require("../icons/bookepper.png")} />
       <Text style={styles.title}>Crie sua conta</Text>
-      <Text style={styles.subtitle}>Transforme sua leitura com o Bookeeper!</Text>
+      <Text style={styles.subtitle}>
+        Transforme sua leitura com o Bookeeper!
+      </Text>
 
       <View style={styles.form}>
-
         <TextInput
           label="Nome"
           placeholder="Digite seu nome"
@@ -78,7 +76,13 @@ export default function TelaCriarConta() {
         />
       </View>
 
-      <Button mode="contained" uppercase='' color='#4E0189' style={styles.button} onPress={handleSubmit}>
+      <Button
+        mode="contained"
+        uppercase=""
+        color="#4E0189"
+        style={styles.button}
+        onPress={handleSubmit}
+      >
         Cadastrar
       </Button>
     </View>
@@ -88,48 +92,48 @@ export default function TelaCriarConta() {
 const styles = StyleSheet.create({
   icon: {
     width: 100,
-    height: 100
+    height: 100,
   },
   container: {
     flex: 1,
-    backgroundColor: '#1975D2',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20
+    backgroundColor: "#1975D2",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
   },
-   title: {
+  title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 30,
-    color: '#FFFFFF'
+    color: "#FFFFFF",
   },
   subtitle: {
     fontSize: 10,
     opacity: 0.6,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 20,
-    color: '#FFFFFF'
+    color: "#FFFFFF",
   },
   form: {
-    width: '80%',
+    width: "80%",
   },
   input: {
     borderRadius: 5,
     marginBottom: 15,
-    placeholder: '#1F1F1F',
-    placeholderTextColor: '#1F1F1F',
-    textColor:'#1F1F1F',
-    color: '#1F1F1F',
-    backgroundColor:'#7BAFE3'
+    placeholder: "#1F1F1F",
+    placeholderTextColor: "#1F1F1F",
+    textColor: "#1F1F1F",
+    color: "#1F1F1F",
+    backgroundColor: "#7BAFE3",
   },
   button: {
-    backgroundColor: '#104C87',
+    backgroundColor: "#104C87",
     borderRadius: 8,
     height: 50,
-    width: '80%',
+    width: "80%",
     marginTop: 15,
     marginBottom: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

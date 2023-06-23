@@ -1,15 +1,23 @@
-import { useState } from 'react';
-import { StatusBar } from 'react-native';
-import { View, Text, Button, Image, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { Appbar, TextInput } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useState } from "react";
+import { StatusBar } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { Appbar, TextInput } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const TelaPesquisa = () => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [bookData, setBookData] = useState(null);
   const [totalResults, setTotalResults] = useState(0);
-  
+
   const searchBooks = () => {
     const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${query}`;
 
@@ -31,8 +39,8 @@ const TelaPesquisa = () => {
   const navigation = useNavigation();
 
   const handleBookPress = (book) => {
-    console.log('handleBookPress')
-    navigation.navigate('DetalhesLivro', { book, googleId: book.id });
+    console.log("handleBookPress");
+    navigation.navigate("DetalhesLivro", { book, googleId: book.id });
   };
 
   // let imageSource;
@@ -43,52 +51,62 @@ const TelaPesquisa = () => {
   // }
 
   const renderItem = ({ item }) => (
-
     <TouchableOpacity key={item.id} onPress={() => handleBookPress(item)}>
       <View style={{ marginBottom: 16 }}>
-      {item.imageLinks && item.imageLinks.thumbnail ? (
-        <Image
-          source={{ uri: item.imageLinks.thumbnail }}
-          style={{ width: 200, height: 300 }}
-        />
-      ) : (
-        <Image
-          source={require('../icons/imagem-de-capa-indisponivel.png')}
-          style={{ width: 200, height: 300 }}
-        />
-      )}
+        {item.imageLinks && item.imageLinks.thumbnail ? (
+          <Image
+            source={{ uri: item.imageLinks.thumbnail }}
+            style={{ width: 200, height: 300 }}
+          />
+        ) : (
+          <Image
+            source={require("../icons/imagem-de-capa-indisponivel.png")}
+            style={{ width: 200, height: 300 }}
+          />
+        )}
         <Text>{item.title}</Text>
-        <Text>Autor: {item.authors?.join(', ')}</Text>
+        <Text>Autor: {item.authors?.join(", ")}</Text>
       </View>
     </TouchableOpacity>
   );
 
   return (
     <>
-      <StatusBar style="auto"/>
+      <StatusBar style="auto" />
 
-      <Appbar.Header style={{ backgroundColor: '#1975D2' }}>
-        <Text style={{ fontSize: 30, fontWeight: 'bold' }}>Explorar</Text>
+      <Appbar.Header style={{ backgroundColor: "#1975D2" }}>
+        <Text style={{ fontSize: 30, fontWeight: "bold" }}>Explorar</Text>
       </Appbar.Header>
 
-        <TextInput
-          placeholder="Digite o título do livro"
-          mode="outlined"
-          style={styles.input}
-          left={<TextInput.Icon name={() => <MaterialCommunityIcons name="magnify" />} color="white" />}          value={query}
-          onChangeText={setQuery}
-        />
-        <Button title="Buscar" onPress={searchBooks} />
+      <TextInput
+        placeholder="Digite o título do livro"
+        mode="outlined"
+        style={styles.input}
+        left={
+          <TextInput.Icon
+            name={() => <MaterialCommunityIcons name="magnify" />}
+            color="white"
+          />
+        }
+        value={query}
+        onChangeText={setQuery}
+      />
+      <Button title="Buscar" onPress={searchBooks} />
 
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', textColor:'#FFFFFFF', }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          textColor: "#FFFFFFF",
+        }}
+      >
         {bookData && (
           <FlatList
             data={bookData}
             renderItem={renderItem}
             keyExtractor={(items) => items.id}
-            ListEmptyComponent={() => (
-              <Text>Nenhum livro encontrado.</Text>
-            )}
+            ListEmptyComponent={() => <Text>Nenhum livro encontrado.</Text>}
           />
         )}
       </View>
@@ -100,13 +118,12 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: 5,
     marginBottom: 15,
-    placeholder: '#1F1F1F',
-    placeholderTextColor: '#1F1F1F',
-    textColor:'#1F1F1F',
-    color: '#1F1F1F',
-    backgroundColor:'#7BAFE3'
+    placeholder: "#1F1F1F",
+    placeholderTextColor: "#1F1F1F",
+    textColor: "#1F1F1F",
+    color: "#1F1F1F",
+    backgroundColor: "#7BAFE3",
   },
 });
-
 
 export default TelaPesquisa;
