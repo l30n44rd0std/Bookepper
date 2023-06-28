@@ -1,27 +1,18 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  Linking,
-  Button,
-  Modal,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, StyleSheet, Linking, TouchableOpacity } from "react-native";
+import { Button, Modal, Portal, Provider } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 
 const DetalhesLivro = ({ route }) => {
   const [book, setBook] = useState(route.params?.book || null);
-
   const { googleId } = route.params;
 
   const [showDialog, setShowDialog] = useState(false);
   const [readingStatus, setReadingStatus] = useState("");
 
   useEffect(() => {
-    const loadLivro = () => {
+    const carregarLivro = () => {
       const apiUrl = `https://www.googleapis.com/books/v1/volumes/${googleId}`;
 
       fetch(apiUrl)
@@ -31,7 +22,7 @@ const DetalhesLivro = ({ route }) => {
         })
         .catch((error) => console.error(error));
     };
-    if (!book) loadLivro();
+    if (!book) carregarLivro();
   }, [googleId]);
 
   const handleAmazonLink = () => {
@@ -41,7 +32,7 @@ const DetalhesLivro = ({ route }) => {
     Linking.openURL(amazonLink);
   };
 
-  const handleAddToLibrary = async (status) => {
+  const handleAdicionarNaLivraria = async (status) => {
     setShowDialog(false);
     setReadingStatus(status);
 
@@ -65,153 +56,180 @@ const DetalhesLivro = ({ route }) => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        {book.imageLinks && book.imageLinks.thumbnail ? (
-          <Image
-            source={{ uri: book.imageLinks.thumbnail }}
-            style={styles.coverImage}
-          />
-        ) : (
-          <Image
-            source={require("../icons/imagem-de-capa-indisponivel.png")}
-            style={styles.coverImage}
-          />
-        )}
-        <Text style={styles.title}>{book.title}</Text>
-        <Text style={styles.author}>Autor: {book.authors?.join(", ")}</Text>
-        <Text style={styles.description}>{book.description}</Text>
-
-        <Text style={styles.label}>Editora:</Text>
-        <Text>{book.publisher}</Text>
-
-        <Text style={styles.label}>Data de publicação:</Text>
-        <Text>{book.publishedDate}</Text>
-
-        <Text style={styles.label}>ISBN:</Text>
-        <Text>{book.industryIdentifiers?.[0]?.identifier}</Text>
-
-        <Text style={styles.label}>Categoria:</Text>
-        <Text>{book.categories?.join(", ")}</Text>
-
-        <Text style={styles.label}>Avaliações:</Text>
-        <Text>{book.averageRating}</Text>
-
-        <Text style={styles.label}>Número de páginas:</Text>
-        <Text>{book.pageCount}</Text>
-
-        <Button title="Ver na loja da Amazon" onPress={handleAmazonLink} />
-
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => setShowDialog(true)}
-        >
-          <Ionicons name="add" size={24} color="white" />
-        </TouchableOpacity>
-
-        <Modal
-          visible={showDialog}
-          animationType="slide"
-          transparent={true}
-          onRequestClose={() => setShowDialog(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                Adicionar Livro na Biblioteca Pessoal
-              </Text>
-              <Text style={styles.modalSubtitle}>Status da leitura:</Text>
-              <View style={styles.modalButtons}>
-                <Button
-                  title="Já li"
-                  onPress={() => handleAddToLibrary("Já li")}
+    <Provider>
+      <>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.container1}>
+            <View style={styles.viewCapa}>
+              {book.imageLinks && book.imageLinks.thumbnail ? (
+                <Image source={{ uri: book.imageLinks.thumbnail }} style={styles.capa} />
+              ) : (
+                <Image
+                  source={require("../icons/imagem-de-capa-indisponivel.png")}
+                  style={styles.capa}
                 />
-                <Button
-                  title="Lendo"
-                  onPress={() => handleAddToLibrary("Lendo")}
-                />
-                <Button
-                  title="Quero Ler"
-                  onPress={() => handleAddToLibrary("Quero Ler")}
-                />
-                <Button
-                  title="Abandonado"
-                  onPress={() => handleAddToLibrary("Abandonado")}
-                />
-              </View>
+              )}
             </View>
+
+            <View style={styles.container2}>
+              <Text style={styles.titulo}>{book.title}</Text>
+              <Text style={styles.autor}>{book.authors?.join(", ")}</Text>
+              <Text>Editora: {book.publisher}</Text>
+              <Text>Publicação: {book.publishedDate}</Text>
+              <Text style={styles.informacoes}>ISBN: {book.industryIdentifiers?.[0]?.identifier}</Text>
+
+              <Text style={styles.informacoes}>Categoria: {book.categories?.join(", ")}</Text>
+            </View>
+
           </View>
-        </Modal>
-      </View>
-    </ScrollView>
+            <View style={styles.container3}>
+              <Text style={styles.informacoes}>Avaliações: {book.averageRating}</Text>
+              <Text style={styles.informacoes}>Tipo: Físico</Text>
+              <Text style={styles.informacoes}>Número de páginas: {book.pageCount}</Text>
+
+              <Button style={styles.botaoAmazon} mode="contained" onPress={handleAmazonLink}>
+                Ver na loja da Amazon
+              </Button>
+
+              <TouchableOpacity style={styles.botaoAdd} onPress={() => setShowDialog(true)}>
+                <Ionicons name="add" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+
+          <View style={styles.descricao}>
+            <Text style={styles.descricaoTitulo}>Descrição</Text>
+            <Text style={styles.descricaoTexto}>{book.description}</Text>
+          </View>
+
+          <Portal>
+            <Modal
+              visible={showDialog}
+              onDismiss={() => setShowDialog(false)}
+              contentContainerStyle={styles.modalContainer}
+            >
+              <View style={styles.conteudoModal}>
+                <Text style={styles.tituloModal}>
+                  Leitura
+                </Text>
+                <Text style={styles.subtituloModal}>Status da leitura:</Text>
+                <View style={styles.botoesModal}>
+                  <Button
+                    mode="contained"
+                    onPress={() => handleAdicionarNaLivraria("Já li")}
+                  >
+                    Já li
+                  </Button>
+                  <Button
+                    mode="contained"
+                    onPress={() => handleAdicionarNaLivraria("Lendo")}
+                  >
+                    Lendo
+                  </Button>
+                  <Button
+                    mode="contained"
+                    onPress={() => handleAdicionarNaLivraria("Quero Ler")}
+                  >
+                    Quero Ler
+                  </Button>
+                  <Button
+                    mode="contained"
+                    onPress={() => handleAdicionarNaLivraria("Abandonado")}
+                  >
+                    Abandonado
+                  </Button>
+                </View>
+              </View>
+            </Modal>
+          </Portal>
+        </View>
+      </ScrollView>
+    </>
+    </Provider>
   );
 };
 
 // Estilos de CSS
 const styles = StyleSheet.create({
-  container: {
+  container1: {
     flex: 1,
     padding: 16,
-    alignItems: "center",
+    paddingBottom: 100,
+    backgroundColor:'#1975D2',
+    flexDirection: 'row'
   },
-  coverImage: {
+  container2: {
+    
+  },
+  capa: {
     width: 200,
     height: 300,
-    marginBottom: 16,
+    margin: 20,
+    borderRadius: 15,
   },
-  title: {
-    fontSize: 24,
+  titulo: {
+    fontSize: 30,
     fontWeight: "bold",
-    marginBottom: 8,
+    margin: 8,
+    height: 100,
+    width: 100
   },
-  author: {
-    fontSize: 18,
-    marginBottom: 8,
+  // autor: {
+  //   fontSize: 18,
+  //   marginBottom: 8,
+  // },
+  descricao: {
+    padding: 20
   },
-  description: {
+  descricaoTitulo: {
+    fontWeight: 'bold',
+    fontSize: 30,
+    paddingBottom: 6,
+  },
+  descricaoTexto: {
     fontSize: 16,
     marginBottom: 8,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginTop: 8,
+  // informacoes: {
+  //   fontSize: 16,
+  //   fontWeight: "bold",
+  //   marginTop: 8,
+  // },
+  botaoAmazon: {
+    backgroundColor: '#104C87',
+    width: 200,
+    borderRadius: 10,
+    fontWeight:"normal"
   },
-  addButton: {
-    backgroundColor: "green",
+  botaoAdd: {
+    backgroundColor: "#104C87",
     borderRadius: 50,
     width: 56,
     height: 56,
     alignItems: "center",
     justifyContent: "center",
-    position: "absolute",
-    bottom: 24,
-    right: 24,
-    elevation: 2,
   },
   modalContainer: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
   },
-  modalContent: {
+  conteudoModal: {
     backgroundColor: "white",
     padding: 16,
     borderRadius: 8,
     elevation: 5,
     minWidth: 300,
   },
-  modalTitle: {
+  tituloModal: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
   },
-  modalSubtitle: {
+  subtituloModal: {
     fontSize: 18,
     marginBottom: 8,
   },
-  modalButtons: {
+  botoesModal: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 16,
@@ -219,3 +237,4 @@ const styles = StyleSheet.create({
 });
 
 export default DetalhesLivro;
+

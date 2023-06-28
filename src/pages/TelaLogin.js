@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     textColor: "#1F1F1F",
     color: "#1F1F1F",
     backgroundColor: "#7BAFE3",
+    outlineStyle: '#1F1F1F'
   },
 
   botao: {
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
     color: "#fffffffff",
   },
   textoLinkCriarConta: {
-    color: "#4E0189",
+    color: "#ffff",
     marginTop: 0.5,
     fontWeight: "bold",
     textAlign: "center",

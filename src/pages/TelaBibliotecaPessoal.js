@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
+import { Chip } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 const BibliotecaPessoal = () => {
@@ -29,14 +30,20 @@ const BibliotecaPessoal = () => {
   }, []);
 
   const handleBookPress = (book) => {
-    navigation.navigate("DetalhesLivro", { book, googleId: book.google_id });
+    navigation.navigate("TelaDetalhesLivro", { book, googleId: book.google_id });
   };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleBookPress(item)}>
-      <View style={styles.bookContainer}>
-        <Image source={{ uri: item.imagem_capa }} styles={styles.bookImage} />
-        <Text style={styles.bookTitle}>{item.titulo}</Text>
+      <View style={styles.containerLivro}>
+        <Image source={{ uri: item.imagem_capa }} styles={styles.imagemLivro} />
+        <Text style={styles.tituloLivro}>{item.titulo}</Text>
+        <View style={styles.chipsContainer}>
+          {item.status === "Lendo" && <Chip style={styles.chip}>Lendo</Chip>}
+          {item.status === "Finalizado" && <Chip style={styles.chip}>Finalizado</Chip>}
+          {item.status === "Quero ler" && <Chip style={styles.chip}>Quero ler</Chip>}
+          {item.status === "Abandonei" && <Chip style={styles.chip}>Abandonei</Chip>}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -48,7 +55,7 @@ const BibliotecaPessoal = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={() => (
-          <Text style={styles.emptyText}>Nenhum livro adicionado.</Text>
+          <Text style={styles.textoVazio}>Nenhum livro adicionado.</Text>
         )}
       />
     </View>
@@ -60,22 +67,29 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  bookContainer: {
+  containerLivro: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
   },
-  bookImage: {
+  imagemLivro: {
     width: 50,
     height: 75,
     marginRight: 16,
   },
-  bookTitle: {
+  tituloLivro: {
     fontSize: 16,
   },
-  emptyText: {
+  textoVazio: {
     fontSize: 16,
     textAlign: "center",
+  },
+  chipsContainer: {
+    flexDirection: "row",
+    marginTop: 8,
+  },
+  chip: {
+    marginRight: 8,
   },
 });
 

@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { StatusBar } from "react-native";
 import {
+  StatusBar,
   View,
   Text,
-  Button,
   Image,
   FlatList,
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { Appbar, TextInput } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { 
+  Appbar, 
+  Searchbar,
+  Button,
+} from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 const TelaPesquisa = () => {
@@ -40,15 +42,9 @@ const TelaPesquisa = () => {
 
   const handleBookPress = (book) => {
     console.log("handleBookPress");
-    navigation.navigate("DetalhesLivro", { book, googleId: book.id });
+    navigation.navigate("TelaDetalhesLivro", { book, googleId: book.id });
   };
 
-  // let imageSource;
-  // if (item.imageLinks && item.imageLinks.thumbnail) {
-  //   imageSource = { uri: item.imageLinks.thumbnail };
-  // } else {
-  //   imageSource = require('');
-  // }
 
   const renderItem = ({ item }) => (
     <TouchableOpacity key={item.id} onPress={() => handleBookPress(item)}>
@@ -72,58 +68,65 @@ const TelaPesquisa = () => {
 
   return (
     <>
+      <View style={styles.container}>
       <StatusBar style="auto" />
 
-      <Appbar.Header style={{ backgroundColor: "#1975D2" }}>
-        <Text style={{ fontSize: 30, fontWeight: "bold" }}>Explorar</Text>
-      </Appbar.Header>
+        <Appbar.Header style={{ backgroundColor: "#1975D2" }}>
+          <Text style={{ fontSize: 30, fontWeight: "bold" }}>Explorar</Text>
+        </Appbar.Header>
 
-      <TextInput
-        placeholder="Digite o título do livro"
-        mode="outlined"
-        style={styles.input}
-        left={
-          <TextInput.Icon
-            name={() => <MaterialCommunityIcons name="magnify" />}
-            color="white"
-          />
-        }
-        value={query}
-        onChangeText={setQuery}
-      />
-      <Button title="Buscar" onPress={searchBooks} />
+        <Searchbar
+          placeholder="Digite o título do livro"
+          style={styles.searchBar}
+          value={query}
+          onChangeText={setQuery}
+        />
+        <Button mode="contained" onPress={searchBooks} style={styles.botaoPesquisar}>
+          Buscar
+        </Button>
 
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          textColor: "#FFFFFFF",
-        }}
-      >
-        {bookData && (
-          <FlatList
-            data={bookData}
-            renderItem={renderItem}
-            keyExtractor={(items) => items.id}
-            ListEmptyComponent={() => <Text>Nenhum livro encontrado.</Text>}
-          />
-        )}
+        <View style={styles.listaResultado}>
+          {bookData && (
+            <FlatList
+              data={bookData}
+              renderItem={renderItem}
+              keyExtractor={(items) => items.id}
+              ListEmptyComponent={() => <Text>Nenhum livro encontrado.</Text>}
+            />
+          )}
+        </View> 
       </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    borderRadius: 5,
+  container: {
+    flex: 1
+  },
+  searchBar: {
+    borderRadius: 25,
     marginBottom: 15,
     placeholder: "#1F1F1F",
     placeholderTextColor: "#1F1F1F",
     textColor: "#1F1F1F",
     color: "#1F1F1F",
     backgroundColor: "#7BAFE3",
+    margin: 8
   },
+  listaResultado: {
+    padding: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    textColor: "#FFFFFFF",
+  },
+  botaoPesquisar: {
+    backgroundColor: '#104C87',
+    width: 200,
+    borderRadius: 10,
+    fontWeight:"normal",
+    marginLeft: 140
+  }
 });
 
 export default TelaPesquisa;

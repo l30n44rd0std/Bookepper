@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import { Avatar, Button, Text } from "react-native-paper";
-import { useNavigation, useScrollToTop } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 
 const TelaPerfil = () => {
@@ -32,7 +32,7 @@ const TelaPerfil = () => {
   const navigation = useNavigation();
 
   const handleOpenLibrary = () => {
-    navigation.navigate("BibliotecaPessoal");
+    navigation.navigate("TelaBibliotecaPessoal");
   };
   const handleLogout = () => {
     // Lógica para sair da conta do usuário
@@ -59,8 +59,8 @@ const TelaPerfil = () => {
         Biblioteca Pessoal
       </Button>
 
-      <Button onPress={handleLogout} style={styles.button}>
-        Sair
+      <Button mode="contained" onPress={handleLogout} style={styles.button}>
+        Sair da conta
       </Button>
     </View>
   );
@@ -90,6 +90,10 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     marginBottom: 16,
+    backgroundColor: '#104C87',
+    width: 200,
+    borderRadius: 10,
+    fontWeight:"normal"
   },
 });
 

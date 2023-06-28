@@ -1,7 +1,15 @@
-import { View, Image, Text } from "react-native";
-import { Appbar } from "react-native-paper";
+import { View, Image, Text, StyleSheet } from "react-native";
+import { Appbar, Card, Button } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
 const TelaInicial = () => {
+
+  const navigation = useNavigation();
+
+  const handleOpenLibrary = () => {
+    navigation.navigate("TelaBibliotecaPessoal");
+  };
+
   return (
     <View>
       <Appbar.Header style={{ backgroundColor: "#1975D2" }}>
@@ -13,9 +21,29 @@ const TelaInicial = () => {
           <Text style={{ fontSize: 30, fontWeight: "bold" }}>ookepper</Text>
         </View>
       </Appbar.Header>
-      <Text>oiw</Text>
+      <Card.Title
+        title="Olá, Joe"
+      />
+      <Button
+        mode="contained"
+        onPress={handleOpenLibrary}
+        style={styles.button}
+      >
+        Biblioteca Pessoal
+      </Button>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    marginBottom: 16,
+    backgroundColor: '#104C87',
+    width: 200,
+    borderRadius: 10,
+    fontWeight:"normal"
+  },
+})
+
 
 export default TelaInicial;
