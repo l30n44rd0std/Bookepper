@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
   },
   listaResultado: {
     padding: 15,
-    justifyContent: "center",
-    alignItems: "center",
+    // justifyContent: "center",
+    // alignItems: "center",
     textColor: "#FFFFFFF",
   },
   botaoPesquisar: {

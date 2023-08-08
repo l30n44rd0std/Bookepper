@@ -4,7 +4,6 @@ import { useNavigation } from "@react-navigation/native";
 import { TextInput, Button } from "react-native-paper";
 
 export default function TelaLogin() {
- 
   //criando estados p/ e-mail e senha
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -23,22 +22,27 @@ export default function TelaLogin() {
     <View style={styles.container}>
       <Image style={styles.icone} source={require("../icons/bookepper.png")} />
       <Text style={styles.titulo}>Bookeeper</Text>
-      <Text style={styles.subtitulo}>Organize suas leituras com Bookepper!</Text>
+      <Text style={styles.subtitulo}>
+        Organize suas leituras com Bookepper!
+      </Text>
 
       <View style={styles.formulario}>
         <TextInput
           label="E-mail"
+          placeholder="Digite o e-mail"
           value={email}
           style={styles.input}
           onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
         <TextInput
-          label="Senha"
+          placeholder="Senha"
           value={senha}
           onChangeText={setSenha}
           style={styles.input}
           secureTextEntry //oculta o que é digitado
-          right={<TextInput.Icon name="eye" />}
+          // right={<TextInput.Icon name="eye" />}
         />
 
         <Button
@@ -46,7 +50,7 @@ export default function TelaLogin() {
           style={styles.botao}
           onPress={navegarParaTelaInicial}
         >
-          {" "}
+          {/* {" "} */}
           Entrar
         </Button>
       </View>
@@ -66,8 +70,8 @@ export default function TelaLogin() {
 
 const styles = StyleSheet.create({
   icone: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
   },
 
   container: {
@@ -75,20 +79,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#1975D2",
+    padding: 20,
   },
 
   titulo: {
-    fontSize: 32,
+    fontSize: 55,
     fontWeight: "bold",
-    marginBottom: 30,
+    marginBottom: 5,
     color: "#FFFFFF",
   },
 
   subtitulo: {
-    fontSize: 10,
+    fontSize: 15,
     opacity: 0.6,
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 60,
     color: "#FFFFFF",
   },
 
@@ -104,17 +109,19 @@ const styles = StyleSheet.create({
     textColor: "#1F1F1F",
     color: "#1F1F1F",
     backgroundColor: "#7BAFE3",
-    outlineStyle: '#1F1F1F'
+    // outlineStyle: '#1F1F1F'
+    fontSize: 16
   },
 
   botao: {
-    uppercase:"",
+    uppercase: "",
     backgroundColor: "#104C87",
     borderRadius: 5,
-    marginBottom: 15,
+    marginTop: 25,
+    marginBottom: 30,
   },
   textoAbaixoDoBotao: {
-    color: "#fffffffff",
+    color: "#ffff",
   },
   textoLinkCriarConta: {
     color: "#ffff",

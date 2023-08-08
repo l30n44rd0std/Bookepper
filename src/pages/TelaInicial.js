@@ -24,12 +24,15 @@ const TelaInicial = () => {
       <Card.Title
         title="Olá, Joe"
       />
+
+      <Text>Atividades recentes:</Text>
+
       <Button
         mode="contained"
         onPress={handleOpenLibrary}
         style={styles.button}
       >
-        Biblioteca Pessoal
+        Acessar biblioteca Pessoal
       </Button>
     </View>
   );
