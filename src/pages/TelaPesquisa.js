@@ -52,16 +52,16 @@ const TelaPesquisa = () => {
         {item.imageLinks && item.imageLinks.thumbnail ? (
           <Image
             source={{ uri: item.imageLinks.thumbnail }}
-            style={{ width: 200, height: 300 }}
+            style={{ width: 200, height: 300, borderRadius: 15 }}
           />
         ) : (
           <Image
             source={require("../icons/imagem-de-capa-indisponivel.png")}
-            style={{ width: 200, height: 300 }}
+            style={{ width: 200, height: 300, borderRadius: 15 }}
           />
         )}
-        <Text>{item.title}</Text>
-        <Text>Autor: {item.authors?.join(", ")}</Text>
+        <Text style={{ color: '#fff' }}>{item.title}</Text>
+        <Text style={{ color: '#fff' }}>Autor: {item.authors?.join(", ")}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -72,7 +72,7 @@ const TelaPesquisa = () => {
       <StatusBar style="auto" />
 
         <Appbar.Header style={{ backgroundColor: "#1975D2" }}>
-          <Text style={{ fontSize: 30, fontWeight: "bold" }}>Explorar</Text>
+          <Text style={{ fontSize: 30, fontWeight: "bold", color: '#fff', paddingLeft: 10 }}>Explorar</Text>
         </Appbar.Header>
 
         <Searchbar
@@ -102,7 +102,8 @@ const TelaPesquisa = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#104C87",
   },
   searchBar: {
     borderRadius: 25,
@@ -118,10 +119,10 @@ const styles = StyleSheet.create({
     padding: 15,
     // justifyContent: "center",
     // alignItems: "center",
-    textColor: "#FFFFFFF",
+    textColor: "#FFFF",
   },
   botaoPesquisar: {
-    backgroundColor: '#104C87',
+    backgroundColor: "#204C77",
     width: 200,
     borderRadius: 10,
     fontWeight:"normal",
