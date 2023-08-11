@@ -1,5 +1,11 @@
 import { View, StyleSheet } from "react-native";
-import { Avatar, Button, Text } from "react-native-paper";
+import {
+  Avatar,
+  Button,
+  Text,
+  IconButton,
+  MD3Colors,
+} from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 
@@ -43,12 +49,19 @@ const TelaPerfil = () => {
     <View style={styles.container}>
       <View style={styles.profileContainer}>
         {user.imagem_avatar ? (
-          <Avatar.Image source={{ uri: user.imagem_avatar }} size={150} />
+          <Avatar.Image source={{ uri: user.imagem_avatar }} size={400} />
         ) : (
           <Avatar.Text label={user.nome.toUpperCase()} size={150} />
         )}
         <Text style={styles.nome}>{user.nome}</Text>
         <Text style={styles.email}>{user.email}</Text>
+        <IconButton
+          icon="camera"
+          mode="contained"
+          // iconColor={MD3Colors.blue}
+          size={20}
+          onPress={() => console.log("Pressed")}
+        />
       </View>
 
       <Button
@@ -72,28 +85,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 16,
+    backgroundColor: "#104C87",
   },
   profileContainer: {
     alignItems: "center",
     marginBottom: 32,
   },
   nome: {
+    color: "#ffff",
     fontSize: 24,
     fontWeight: "bold",
     marginTop: 16,
   },
   email: {
+    color: "#ffff",
     fontSize: 18,
     marginTop: 8,
-    color: "gray",
   },
   button: {
     width: "100%",
     marginBottom: 16,
-    backgroundColor: '#104C87',
+    backgroundColor: "#204C77",
     width: 200,
     borderRadius: 10,
-    fontWeight:"normal"
+    fontWeight: "normal",
   },
 });
 
