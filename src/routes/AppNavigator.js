@@ -10,6 +10,7 @@ import TelaPesquisa from "../pages/TelaPesquisa";
 import TelaPerfil from "../pages/TelaPerfil";
 import TelaDetalhesLivro from "../pages/TelaDetalhesLivro";
 import TelaBibliotecaPessoal from "../pages/TelaBibliotecaPessoal";
+import TelaEditarInfo from "../pages/TelaEditarInfo.js";
 
 const Stack = createStackNavigator();
 
@@ -21,11 +22,18 @@ const EntradaStack = () => {
         component={TelaLogin}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="TelaCriarConta" component={TelaCriarConta} />
+      <Stack.Screen 
+        name="TelaCriarConta" 
+        component={TelaCriarConta} 
+      />
       <Stack.Screen
         name="BottomTabNavigator"
         component={BottomTabNavigator}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="EditarInfoUsuario"
+        component={TelaEditarInfo}
       />
       <Stack.Screen
         name="TelaPesquisa"
@@ -54,6 +62,7 @@ const AppNavigator = () => {
   return (
     <Stack.Navigator>
         <Stack.Screen
+
           name="EntradaStack"
           component={EntradaStack}
           options={{ headerShown: false }}
