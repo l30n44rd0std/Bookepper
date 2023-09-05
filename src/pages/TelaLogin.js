@@ -2,11 +2,12 @@ import { useState } from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { TextInput, Button } from "react-native-paper";
+import requestsUser from "../api/requests/user";
 
 export default function TelaLogin() {
   //criando estados p/ e-mail e senha
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [password, setPassword] = useState("");
 
   //navegação p/ outras telas
   const navigation = useNavigation();
@@ -16,6 +17,21 @@ export default function TelaLogin() {
   };
   const navegarParaTelaInicial = () => {
     navigation.navigate("BottomTabNavigator");
+  };
+
+  const handleLogin = async () => {
+    try {
+      const response = await requestsUser.login({email: email, password: password})
+      console.log('Sucesso no Login', response.data);
+      navigation.navigate("BottomTabNavigator");
+    } catch (error) {
+      console.error('Falha no login', error);
+      if (error.response){
+        console.log('Data:', error.response.data);
+        console.log('Status:', error.response.status);
+        console.log('Headers:', error.response.headers);
+      }
+    }
   };
 
   return (
@@ -38,8 +54,8 @@ export default function TelaLogin() {
         />
         <TextInput
           placeholder="Senha"
-          value={senha}
-          onChangeText={setSenha}
+          value={password}
+          onChangeText={setPassword}
           style={styles.input}
           secureTextEntry //oculta o que é digitado
           // right={<TextInput.Icon name="eye" />}
@@ -48,9 +64,8 @@ export default function TelaLogin() {
         <Button
           mode="contained"
           style={styles.botao}
-          onPress={navegarParaTelaInicial}
+          onPress={handleLogin}
         >
-          {/* {" "} */}
           Entrar
         </Button>
       </View>
