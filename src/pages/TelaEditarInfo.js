@@ -5,33 +5,40 @@ const TelaPerfil = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.viewFotoPerfil}>
         <TouchableOpacity style={styles.clicarFotoPerfil}>
             <Image 
             style={styles.fotoPerfil}
-                source={{ uri: "https://fastly.picsum.photos/id/64/4326/2884.jpg?hmac=9_SzX666YRpR_fOyYStXpfSiJ_edO3ghlSRnH2w09Kg" }}
+                source={require('../icons/clicia.jpg')}
             />
         </TouchableOpacity>
+      </View>
 
         <View style={styles.forms}>
+          <View style={{marginBottom: 20}}>
             <Text style={styles.labelInput}>Nome do usuário:</Text>
             <TextInput 
             style={styles.input}
             placeholder="Digite o nome do usuário"
             />
+          </View>
 
+          <View style={{marginBottom: 20}}>
+            <Text style={styles.labelInput}>E-mail:</Text>
+            <TextInput 
+            style={styles.input}
+            placeholder="Digite o nome do usuário"
+            />
+          </View>
 
-        <Text style={styles.labelInput}>E-mail:</Text>
-        <TextInput 
-        style={styles.input}
-        placeholder="Digite o nome do usuário"
-        />
-
-        <Text style={styles.labelInput}>Senha:</Text>
-        <TextInput 
-        style={styles.input}
-        placeholder="Digite o nome do usuário"
-        />
-        </View>
+          <View style={{marginBottom: 20}}>
+            <Text style={styles.labelInput}>Senha:</Text>
+            <TextInput 
+            style={styles.input}
+            placeholder="Digite o nome do usuário"
+            />
+            </View>
+          </View>
 
         <TouchableOpacity style={styles.btnSalvar}>
             <Text style={styles.btnSalvarText}>Salvar Informações</Text>
@@ -44,10 +51,13 @@ const TelaPerfil = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
     padding: 16,
     backgroundColor: "#104C87",
+  },
+  viewFotoPerfil: {
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 80
   },
   fotoPerfil: {
     borderRadius: 200,
@@ -55,8 +65,9 @@ const styles = StyleSheet.create({
     height: 300
   },
   forms: {
-    paddingBottom: 15
-  },
+    paddingBottom: 15,
+    margin: 20,
+    },
   labelInput: {
     color:"#fff",
     fontWeight: 'bold',
@@ -69,10 +80,16 @@ const styles = StyleSheet.create({
   btnSalvar: {
     backgroundColor: '#204C77',
     borderRadius: 20,
-    alignItems: "center"
+    alignItems: "center",
+    justifyContent: "center",
+    width: 400,
+    height: 35,
+    margin: 180,
+    marginLeft: 30
   },
   btnSalvarText: {
-    color: '#fff'
+    color: '#fff',
+    fontWeight: 'bold'
   }
 });
 
