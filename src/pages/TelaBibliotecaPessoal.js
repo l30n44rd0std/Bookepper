@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-} from "react-native";
-import { Chip, Appbar, Butto, SegmentedButtons } from "react-native-paper";
+import { View, Text, FlatList, TouchableOpacity, Image,StyleSheet } from "react-native";
+import { Chip, Appbar, SegmentedButtons } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 const BibliotecaPessoal = () => {

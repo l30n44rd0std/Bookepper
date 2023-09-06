@@ -1,10 +1,10 @@
 const { default: axios } = require("axios");
 
-const apiUrl = "http://10.220.30.133:3005/user";
+const apiUrl = "http://10.220.30.96:3005/user";
 
 const requestsUser = {
-    async login ({email, password}){
-        return await axios.post(apiUrl + '/login', {email: email, password: password})
+    async login ({username, email, password}){
+        return await axios.post(apiUrl + '/login', {username: username, email: email, password: password})
     },
     async register ({username, email, password}){
         return await axios.post(apiUrl + '/register', {username: username, email: email, password: password})
