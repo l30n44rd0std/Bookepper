@@ -4,8 +4,12 @@ import { useNavigation } from "@react-navigation/native";
 import { TextInput, Button } from "react-native-paper";
 import requestsUser from "../api/requests/user";
 
+import { useUserContext } from '../UserContext';
+
 export default function TelaLogin() {
   //criando estados p/ e-mail e senha
+  const { updateUser } = useUserContext();
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -21,7 +25,10 @@ export default function TelaLogin() {
 
   const handleLogin = async () => {
     try {
-      const response = await requestsUser.login({email: email, password: password})
+      const response = await requestsUser.login({username: username, email: email, password: password})
+      const user = { username: response.data?.username, email: email, password: password }
+
+      updateUser(user);
       console.log('Sucesso no Login', response.data);
       navigation.navigate("BottomTabNavigator");
     } catch (error) {
@@ -44,21 +51,21 @@ export default function TelaLogin() {
 
       <View style={styles.formulario}>
         <TextInput
-          label="E-mail"
-          placeholder="Digite o e-mail"
-          value={email}
-          style={styles.input}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
+        label="E-mail"
+        placeholder="Digite o e-mail"
+        value={email}
+        style={styles.input}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
         />
         <TextInput
-          placeholder="Senha"
-          value={password}
-          onChangeText={setPassword}
-          style={styles.input}
-          secureTextEntry //oculta o que é digitado
-          // right={<TextInput.Icon name="eye" />}
+        placeholder="Senha"
+        value={password}
+        onChangeText={setPassword}
+        style={styles.input}
+        secureTextEntry //oculta o que é digitado
+        // right={<TextInput.Icon name="eye" />}
         />
 
         <Button

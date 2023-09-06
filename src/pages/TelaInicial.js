@@ -2,6 +2,10 @@
 import { View, Image, Text, StyleSheet } from "react-native";
 import { Appbar, Card, Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import requestsUser from "../api/requests/user";
+import { useState, useEffect } from "react";
+
+import { useUserContext } from '../UserContext';
 
 const TelaInicial = () => {
   const navigation = useNavigation();
@@ -10,10 +14,27 @@ const TelaInicial = () => {
     navigation.navigate("TelaBibliotecaPessoal");
   };
 
-  // const [state, setState] = useState({ open: false });
-  // const onStateChange = ({ open }) => setState({ open });
-  // const { open } = state;
-  // const getFABIcon = () => (open ? "close" : "plus");
+  const { user } = useUserContext();
+  console.log(user);
+
+  // const loadUsername = async () => {
+  //   try {
+  //     const response = await requestsUser.loadProfile({ username: username });
+  //     setUsername(response.data.username); // Atualize o estado com o nome de usuário do response
+  //     console.log('nome do usuario', response.data.username);
+  //     console.log('Sucesso ao carregar info do usuário')
+  //   } catch (error) {
+  //     console.log("Não foi possível carregar info de usuário.");
+  //   }
+  // }
+  
+  // if(username){
+  //   loadUsername();
+  // }
+
+  // useEffect(() => {
+  //   loadUsername();
+  // }, []);
 
   return (
     <>
@@ -32,9 +53,9 @@ const TelaInicial = () => {
       </View>
 
       <View style={styles.container}>
-        {/* <Card.Title title="Olá, Joe" style={styles.olaUsuario} /> */}
+
         <View style={styles.apresentacao}>
-          <Text style={styles.olaUsuario}>Olá, @user!</Text>
+          <Text style={styles.olaUsuario}>Olá, {user.username}</Text>
         </View>
 
         <View style={styles.atividadesRecentes}>
@@ -82,24 +103,7 @@ const TelaInicial = () => {
             Acessar biblioteca Pessoal
           </Button>
         </View>
-        {/* <FAB.Group
-          style={styles.fabGroup}
-          open={open}
-          icon={getFABIcon(open)} // Passando o ícone diretamente
-          actions={[
-            {
-              icon: "plus",
-              label: "Add Book",
-              onPress: () => console.log("Add Book Pressed"),
-            },
-            {
-              icon: "star",
-              label: "Favorite",
-              onPress: () => console.log("Favorite Pressed"),
-            },
-          ]}
-          onStateChange={onStateChange}
-        /> */}
+
       </View>
     </>
   );

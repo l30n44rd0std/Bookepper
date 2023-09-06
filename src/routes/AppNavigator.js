@@ -48,11 +48,12 @@ const EntradaStack = () => {
       <Stack.Screen
         name="TelaDetalhesLivro"
         component={TelaDetalhesLivro}
-        options={{ title: "Informações do livro" }}
+        options={{ title: "Informações do livro", headerShown: false }}
       />
       <Stack.Screen
         name="TelaBibliotecaPessoal"
         component={TelaBibliotecaPessoal}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

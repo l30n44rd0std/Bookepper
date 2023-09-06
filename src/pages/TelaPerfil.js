@@ -1,75 +1,64 @@
 import { View, StyleSheet } from "react-native";
-import {
-  Avatar,
-  Button,
-  Text,
-  IconButton,
-  MD3Colors,
-} from "react-native-paper";
+import { Avatar, Button, Text, IconButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import requestsUser from "../api/requests/user";
+
+import { useUserContext } from '../UserContext';
 
 const TelaPerfil = () => {
-  // Informações fictícias do usuário
-  const userTemp = {
-    nome: "John Doe",
-    email: "johndoe@example.com",
-    imagem_avatar:
-      "https://fastly.picsum.photos/id/64/4326/2884.jpg?hmac=9_SzX666YRpR_fOyYStXpfSiJ_edO3ghlSRnH2w09Kg",
-  };
+  const { user } = useUserContext();
 
-  const [user, setUser] = useState(userTemp);
-
-  useEffect(() => {
-    const loadPerfil = () => {
-      const apiUrl = `https://api-backend-bd-tarde.onrender.com/bookeeper/usuario/1/perfil`;
-
-      fetch(apiUrl)
-        .then((response) => response.json())
-        .then((dataPerfil) => {
-          setUser(dataPerfil);
-        })
-        .catch((error) => console.error(error));
-    };
-
-    loadPerfil();
-  }, []);
+    // const loadPerfil = async () => {
+    //   try {
+    //     const response = await requestsUser.loadProfile({ username: username, email: email }); // Chame a função loadProfile do módulo requestsUser
+    //     setUser(response.data);
+    //     setUsername(response.data.username);
+    //     setEmail(response.data.email);
+    //   } catch (error) {
+    //     console.error("Erro ao carregar perfil:", error);
+    //   }
+    // };
 
   const navigation = useNavigation();
 
   const handleOpenLibrary = () => {
     navigation.navigate("TelaBibliotecaPessoal");
   };
+
+  const handleEditProfile = () => {
+    navigation.navigate("EditarInfoUsuario");
+  }
+
   const handleLogout = () => {
     // Lógica para sair da conta do usuário
     // ...
   };
 
+  // useEffect(() => {
+  //   loadPerfil();
+  // }, []);
+
   return (
     <View style={styles.container}>
-      <View style={styles.profileContainer}>
-        {user.imagem_avatar ? (
-          <Avatar.Image source={{ uri: user.imagem_avatar }} size={400} />
-        ) : (
-          <Avatar.Text label={user.nome.toUpperCase()} size={150} />
-        )}
-        <Text style={styles.nome}>{user.nome}</Text>
-        <Text style={styles.email}>{user.email}</Text>
-        <IconButton
-          icon="camera"
-          mode="contained"
-          // iconColor={MD3Colors.blue}
-          size={20}
-          onPress={() => console.log("Pressed")}
-        />
-      </View>
+        <View style={styles.profileContainer}>
+            <Avatar.Image source={require('../icons/clicia.jpg')} size={400} />
+          <Text style={styles.nome}>{user.username}</Text>
+          <Text style={styles.email}>{user.email}</Text>
+          <IconButton
+            icon="pencil"
+            mode="contained"
+            size={20}
+            onPress={handleEditProfile}
+          />
+        </View>
 
       <Button
         mode="contained"
         onPress={handleOpenLibrary}
         style={styles.button}
       >
-        Biblioteca Pessoal
+        Ir para biblioteca pessoal
       </Button>
 
       <Button mode="contained" onPress={handleLogout} style={styles.button}>
@@ -102,11 +91,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 8,
   },
+  loadingText: {
+    color: "#ffff",
+    fontSize: 18,
+  },
   button: {
     width: "100%",
     marginBottom: 16,
     backgroundColor: "#204C77",
-    width: 200,
+    width: 300,
     borderRadius: 10,
     fontWeight: "normal",
   },
