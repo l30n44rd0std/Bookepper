@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 16,
-    backgroundColor: "#104C87",
+    backgroundColor: "#041A30",
   },
   profileContainer: {
     alignItems: "center",
