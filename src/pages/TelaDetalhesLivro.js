@@ -11,55 +11,54 @@ import { Button, Modal, Portal, Provider } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 
+import { addBookToLibrary } from "../BookStorage";
+
 const DetalhesLivro = ({ route }) => {
   const [book, setBook] = useState(route.params?.book || null);
   const { googleId } = route.params;
 
   const [showDialog, setShowDialog] = useState(false);
   const [readingStatus, setReadingStatus] = useState("");
-
+  
   useEffect(() => {
     const carregarLivro = () => {
       const apiUrl = `https://www.googleapis.com/books/v1/volumes/${googleId}`;
-
+      
       fetch(apiUrl)
-        .then((response) => response.json())
-        .then((dataLivro) => {
-          setBook(dataLivro);
-        })
-        .catch((error) => console.error(error));
+      .then((response) => response.json())
+      .then((dataLivro) => {
+        setBook(dataLivro);
+      })
+      .catch((error) => console.error(error));
     };
     if (!book) carregarLivro();
   }, [googleId]);
-
+  
   const handleAmazonLink = () => {
     const formattedTitle = book.title.replace(/ /g, "+");
     const amazonLink = `https://www.amazon.com.br/s?k=${formattedTitle}`;
-
+    
     Linking.openURL(amazonLink);
   };
-
+  
   const handleAdicionarNaLivraria = async (status) => {
+    console.log("entrou na handleAdicionarNaLivraria");
     setShowDialog(false);
     setReadingStatus(status);
-
-    // Adicione o livro à lista da biblioteca pessoal
+    
+    // console.log('dentro de handleAdicionarNaLivraria, valor do book: ', book)
     const newBook = {
-      titulo: book.volumeInfo.title,
-      resenha: book.volumeInfo.description,
       imagem_capa: book.imageLinks.thumbnail,
+      titulo: book.title,
+      autor: book.authors,
       usuario_id: 1,
-      google_id: book.id,
-      status: status,
+      google_id: googleId,
+      status: readingStatus,
     };
+    console.log("TelaDetalhesLivro book", book);
+    console.log("TelaDetalhesLivro newBook", newBook);
 
-    const livroAdicionado = await fetch(
-      "https://api-backend-bd-tarde.onrender.com/bookeeper/usuario/livro",
-      {
-        method: POST,
-        body: newBook,
-      }
-    );
+    addBookToLibrary(newBook);
   };
 
   return (
@@ -83,31 +82,30 @@ const DetalhesLivro = ({ route }) => {
               </View>
 
               <View style={styles.container2}>
-                <Text style={styles.titulo}>{book.title}</Text>
-                <Text style={styles.autor}>{book.authors?.join(", ")}</Text>
+                <Text style={styles.titulo}>{book?.title}</Text>
+                <Text style={styles.autor}>{book?.authors?.join(", ")}</Text>
                 <Text style={styles.informacoes}>
-                  Editora: {book.publisher}
+                  Editora: {book?.publisher}
                 </Text>
                 <Text style={styles.informacoes}>
-                  Publicação: {book.publishedDate}
+                  Publicação: {book?.publishedDate}
                 </Text>
                 <Text style={styles.informacoes}>
-                  ISBN: {book.industryIdentifiers?.[0]?.identifier}
+                  ISBN: {book?.industryIdentifiers?.[0]?.identifier}
                 </Text>
                 <Text style={styles.informacoes}>
-                  Categoria: {book.categories?.join(", ")}
+                  Categoria: {book?.categories?.join(", ")}
                 </Text>
               </View>
 
               <View style={styles.container3}>
                 <Text style={styles.informacoes}>
-                  Avaliações: {book.averageRating}
+                  Avaliações: {book?.averageRating}
                 </Text>
                 <Text style={styles.informacoes}>Tipo: Físico</Text>
                 <Text style={styles.informacoes}>
-                  Número de páginas: {book.pageCount}
+                  Número de páginas: {book?.pageCount}
                 </Text>
-
               </View>
 
               <View style={styles.container4}>
@@ -129,47 +127,51 @@ const DetalhesLivro = ({ route }) => {
 
             <View style={styles.descricao}>
               <Text style={styles.descricaoTitulo}>Descrição</Text>
-              <Text style={styles.descricaoTexto}>{book.description}</Text>
+              <Text style={styles.descricaoTexto}>{book?.description}</Text>
             </View>
 
-            <Portal>
-              <Modal
-                visible={showDialog}
-                onDismiss={() => setShowDialog(false)}
-                contentContainerStyle={styles.modalContainer}
-              >
-                <View style={styles.conteudoModal}>
-                  <Text style={styles.tituloModal}>Leitura</Text>
-                  <Text style={styles.subtituloModal}>Status da leitura:</Text>
-                  <View style={styles.botoesModal}>
-                    <Button
-                      mode="contained"
-                      onPress={() => handleAdicionarNaLivraria("Já li")}
-                    >
-                      Já li
-                    </Button>
-                    <Button
-                      mode="contained"
-                      onPress={() => handleAdicionarNaLivraria("Lendo")}
-                    >
-                      Lendo
-                    </Button>
-                    <Button
-                      mode="contained"
-                      onPress={() => handleAdicionarNaLivraria("Quero Ler")}
-                    >
-                      Quero Ler
-                    </Button>
-                    <Button
-                      mode="contained"
-                      onPress={() => handleAdicionarNaLivraria("Abandonado")}
-                    >
-                      Abandonado
-                    </Button>
+            {book && (
+              <Portal>
+                <Modal
+                  visible={showDialog}
+                  onDismiss={() => setShowDialog(false)}
+                  contentContainerStyle={styles.modalContainer}
+                >
+                  <View style={styles.conteudoModal}>
+                    <Text style={styles.tituloModal}>Leitura</Text>
+                    <Text style={styles.subtituloModal}>
+                      Status da leitura:
+                    </Text>
+                    <View style={styles.botoesModal}>
+                      <Button
+                        mode="contained"
+                        onPress={() => handleAdicionarNaLivraria("Já li")}
+                      >
+                        Já li
+                      </Button>
+                      <Button
+                        mode="contained"
+                        onPress={() => handleAdicionarNaLivraria("Lendo")}
+                      >
+                        Lendo
+                      </Button>
+                      <Button
+                        mode="contained"
+                        onPress={() => handleAdicionarNaLivraria("Quero Ler")}
+                      >
+                        Quero Ler
+                      </Button>
+                      <Button
+                        mode="contained"
+                        onPress={() => handleAdicionarNaLivraria("Abandonado")}
+                      >
+                        Abandonado
+                      </Button>
+                    </View>
                   </View>
-                </View>
-              </Modal>
-            </Portal>
+                </Modal>
+              </Portal>
+            )}
           </View>
         </ScrollView>
       </>
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   container4: {
-    flexDirection: "row"
+    flexDirection: "row",
   },
   capa: {
     width: 200,

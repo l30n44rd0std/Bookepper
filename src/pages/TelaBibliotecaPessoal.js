@@ -1,135 +1,135 @@
 import { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, Image,StyleSheet } from "react-native";
-import { Chip, Appbar, SegmentedButtons } from "react-native-paper";
+import { View, Text, FlatList, TouchableOpacity, Image, ScrollView, StyleSheet, StatusBar } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { getUserLibrary } from '../BookStorage';
 
 const BibliotecaPessoal = () => {
 
-  const [value, setValue] = useState('');
-
-  const [libraryBooks, setLibraryBooks] = useState([]);
+  const [filter, setFilter] = useState('all');
+  const [userBooks, setUserBooks] = useState([]);
 
   const navigation = useNavigation();
 
   useEffect(() => {
-    const loadFavoritos = () => {
-      const apiUrl = `https://api-backend-bd-tarde.onrender.com/bookeeper/usuario/1/perfil`;
+    async function fetchUserLibrary() {
+      const books = await getUserLibrary();
+      // console.log('Na TelaBibliotecaPessoal, books é: ', books);
+      setUserBooks(books);
+      // console.log('Na TelaBibliotecaPessoal, userBooks é: ', userBooks)
+    }
 
-      fetch(apiUrl)
-        .then((response) => response.json())
-        .then((dataPerfil) => {
-          setLibraryBooks(dataPerfil.livros);
-        })
-        .catch((error) => console.error(error));
-    };
-    loadFavoritos();
+    fetchUserLibrary();
   }, []);
 
-  const handleBookPress = (book) => {
-    navigation.navigate("TelaDetalhesLivro", {
-      book,
-      googleId: book.google_id,
-    });
+  const getImageSource = (item) => {
+    // console.log('Na TelaBibliotecaPessoal, dentro de getImageSource, item é: ', item);
+    if (item.imagem_capa) {
+      return { uri: item.imagem_capa };
+    } else {
+      return require('../icons/imagem-de-capa-indisponivel.png');
+    }
+  }  
+
+  const getColorForStatus = (status) => {
+    switch (status) {
+      case 'ja_li':
+      case 'já li':
+      case 'Já Li':
+      case 'finalizado':
+        return '#0ABA31'; //Verde
+      case 'lendo':
+        return '#C0AF0E'; // Amarelo
+      case 'quero_ler':
+        return '#017790'; // Azul
+      case 'abandonei':
+      case 'abandonado':
+        return '#451F04'; // Marrom
+      default:
+        return '#000' // Preto (Indisponível/Não encontrado)
+    }
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleBookPress(item)}>
-      <View style={styles.containerLivro}>
-        <Image source={{ uri: item.imagem_capa }} styles={styles.imagemLivro} />
-        <Text style={styles.tituloLivro}>{item.titulo}</Text>
-        <View style={styles.chipsContainer}>
-          {item.status === "Lendo" && <Chip style={styles.chip}>Lendo</Chip>}
-          {item.status === "Finalizado" && (
-            <Chip style={styles.chip}>Finalizado</Chip>
-          )}
-          {item.status === "Quero ler" && (
-            <Chip style={styles.chip}>Quero ler</Chip>
-          )}
-          {item.status === "Abandonei" && (
-            <Chip style={styles.chip}>Abandonei</Chip>
-          )}
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
+  const filteredBooks = userBooks.filter((book) => {
+    if (filter === 'all') {
+      return true;
+    }
+    return book === filter;
+  });
+
+  const handleInfoBook = (googleId) => {
+    navigation.navigate("TelaDetalhesLivro", { googleId });
+  };
+  
 
   return (
     <View style={styles.container}>
+    <StatusBar/>
       <View style={styles.header}>
-        <Appbar.Header style={{ backgroundColor: "#1975D2" }}>
-          <Text
-            style={{
-              fontSize: 30,
-              fontWeight: "bold",
-              color: "#fff",
-              paddingLeft: 10,
-            }}
-          >
-            Meus livros
-          </Text>
-        </Appbar.Header>
+
+      {/* style={{flexDirection: "row"}} */}
         <View>
-          <SegmentedButtons 
-            value={value}
-            onValueChange={setValue}
-            density='regular'
-            buttons={[
-              {
-                value: 'lendo',
-                label: 'Lendo',
-              },
-              {
-                value: 'finalizaod',
-                label: 'Finalizado',
-              },
-              { 
-                value: 'quero-ler', 
-                label: 'Quero ler' 
-              },
-              {
-                value: 'abandonei',
-                label: 'Abandonei'
-              }
-            ]}
+          <Text style={styles.headerTitle}>Meus Livros</Text>
+
+          <Image 
+          source={require('../icons/clicia.jpg')}
+          style={styles.iconUserPhoto}
           />
-          {/* <Button
-            mode="contained"
-            onPress={() => handleAdicionarNaLivraria("Já li")}
-            style={styles.botaoFiltros}
-          >
-            Já li
-          </Button>
-          <Button
-            mode="contained"
-            onPress={() => handleAdicionarNaLivraria("Lendo")}
-            style={styles.botaoFiltros}
-          >
-            Lendo
-          </Button>
-          <Button
-            mode="contained"
-            onPress={() => handleAdicionarNaLivraria("Quero Ler")}
-            style={styles.botaoFiltros}
-          >
-            Quero Ler
-          </Button>
-          <Button
-            mode="contained"
-            onPress={() => handleAdicionarNaLivraria("Abandonado")}
-            style={styles.botaoFiltros}
-          >
-            Abandonado
-          </Button> */}
         </View>
+
+        <ScrollView horizontal style={styles.filters}>
+          <TouchableOpacity style={styles.btnFilters} onPress={() => setFilter("all")} >
+            <Text style={styles.textBtnFilters}>Todos</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btnFilters} onPress={() => setFilter("lendo")} >
+            <Text style={styles.textBtnFilters}>Lendo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.btnFilters, {width: 80}]} onPress={() => setFilter("finalizado")} >
+            <Text style={styles.textBtnFilters}>Finalizado</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.btnFilters, {width: 80}]} onPress={() => setFilter("quero_ler")} >
+            <Text style={styles.textBtnFilters}>Quero ler</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.btnFilters, {width: 90}]} onPress={() => setFilter("abandonado")} >
+            <Text style={styles.textBtnFilters}>Abandonado</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
+
+    {filteredBooks && (
       <FlatList
-        data={libraryBooks}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ListEmptyComponent={() => (
-          <Text style={styles.textoVazio}>Nenhum livro adicionado.</Text>
+        data={filteredBooks}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.resultTotal}>
+
+            <View style={styles.viewImage}>
+              <Image 
+              source={getImageSource(item)}
+              style={{ width: 100, height: 100, borderRadius: 15}}
+              />
+            </View>
+
+            <View style={styles.viewOtherInfo}>
+              <Text style={{color: '#fff', fontWeight: 'bold'}}>{item.titulo ? item.titulo : 'Título não encontrado'}</Text>
+              <Text style={{color: '#fff', marginTop: 3,}}>{item.autor ? item.autor : 'Autor não encontrado'}</Text>
+
+              <View style={{flexDirection: "row"}}>
+                <TouchableOpacity style={styles.btnInfo} onPress={handleInfoBook}> 
+                  <Text style={styles.textBtnInfo}>+Info</Text>
+                </TouchableOpacity>
+                <Text style={[styles.status, { backgroundColor: getColorForStatus(item.status) }]}>{item.status ? item.status : 'Indisponível'}</Text>
+              </View>
+            </View>
+
+          </View>
         )}
+      ListEmptyComponent={() =>
+        <View style={styles.viewNotFoundOrEmpty}> 
+          <Text style={styles.notFoundOrEmpty}>Nenhum livro encontrado ou lista vazia.</Text>
+        </View>
+      }
       />
+    )}
     </View>
   );
 };
@@ -138,42 +138,81 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // padding: 16,
-    backgroundColor: "#104C87",
+    backgroundColor: "#041A30",
     flexDirection: "column",
   },
-  filtros: {
-    backgroundColor: "#104C87",
-    flexDirection: "row",
+  header: {
+    backgroundColor: '#1975D2',
   },
-  botaoFiltros: {
-    width: 150,
+  headerTitle: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 38,
+    paddingLeft: 20,
+    paddingTop: 40
   },
-  containerLivro: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  imagemLivro: {
+  iconUserPhoto: {
     width: 50,
-    height: 75,
-    marginRight: 16,
+    height: 50,
+    borderRadius: 150,
+    marginLeft: 390,
+    marginTop: -50
   },
-  tituloLivro: {
-    fontSize: 16,
-    color: "#fff",
+  filters: {
+    padding: 10
   },
-  textoVazio: {
-    fontSize: 16,
-    textAlign: "center",
-    color: "#fff",
-    paddingTop: 30,
+  btnFilters: {
+    backgroundColor: '#041A30',
+    width: 60,
+    height: 30,
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+    borderRadius: 7,
+    margin: 10
   },
-  chipsContainer: {
+  textBtnFilters: {
+    color:'#fff' ,
+  },
+  btnInfo: {
+    backgroundColor: '#fff', 
+    borderRadius: 10,
+    width: 80,
+    height: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+    marginRight: 10
+  },
+  textBtnInfo: {
+    fontWeight: "bold"
+  },
+  status: {
+    color: '#Fff',
+    width: 130,
+    height: 20,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+    paddingLeft: 50
+  },
+  resultTotal: {
     flexDirection: "row",
-    marginTop: 8,
+    margin: 25, 
   },
-  chip: {
-    marginRight: 8,
+  viewOtherInfo: {
+    marginTop: 5,
+    marginLeft: 20,
+  },
+  viewNotFoundOrEmpty: {
+    justifyContent: "center",
+    alignItems: "center",
+    alignContent: "center",
+    marginTop: 400
+  },
+  notFoundOrEmpty: {
+    color: '#fff',
   },
 });
 
