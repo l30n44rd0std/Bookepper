@@ -1,2 +1,10 @@
 node_modules
 node_modules
+@react-native-community/async-storage/assets/splash.png
+@react-native-community/async-storage/assets/icon.png
+@react-native-community/async-storage/app.json
+@react-native-community/async-storage/babel.config.js
+@react-native-community/async-storage/App.js
+@react-native-community/async-storage/assets/adaptive-icon.png
+@react-native-community/async-storage/assets/favicon.png
+@react-native-community/async-storage/.gitignore
