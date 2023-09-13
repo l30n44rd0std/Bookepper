@@ -1,11 +1,10 @@
 // import { useState } from "react";
-import { View, Image, Text, StyleSheet } from "react-native";
-import { Appbar, Card, Button } from "react-native-paper";
+import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Appbar, Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import requestsUser from "../api/requests/user";
-import { useState, useEffect } from "react";
 
 import { useUserContext } from '../UserContext';
+import { ScrollView } from "react-native-gesture-handler";
 
 const TelaInicial = () => {
   const navigation = useNavigation();
@@ -16,25 +15,6 @@ const TelaInicial = () => {
 
   const { user } = useUserContext();
   console.log(user);
-
-  // const loadUsername = async () => {
-  //   try {
-  //     const response = await requestsUser.loadProfile({ username: username });
-  //     setUsername(response.data.username); // Atualize o estado com o nome de usuário do response
-  //     console.log('nome do usuario', response.data.username);
-  //     console.log('Sucesso ao carregar info do usuário')
-  //   } catch (error) {
-  //     console.log("Não foi possível carregar info de usuário.");
-  //   }
-  // }
-  
-  // if(username){
-  //   loadUsername();
-  // }
-
-  // useEffect(() => {
-  //   loadUsername();
-  // }, []);
 
   return (
     <>
@@ -55,14 +35,15 @@ const TelaInicial = () => {
       <View style={styles.container}>
 
         <View style={styles.apresentacao}>
-          <Text style={styles.olaUsuario}>Olá, {user.username}</Text>
+          <Text style={styles.textApresentacao}>Olá, {user.username}</Text>
         </View>
 
-        <View style={styles.atividadesRecentes}>
+        <View style={styles.viewAtividadesRecentes}>
           <Text style={styles.textoAtividadesRecentes}>
             Atividades recentes:
           </Text>
 
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View style={styles.livrosAtvRecentes}>
             <Image
               source={require("../icons/imagem-de-capa-indisponivel.png")}
@@ -72,7 +53,7 @@ const TelaInicial = () => {
                 borderRadius: 10,
                 marginRight: 10,
               }}
-            />
+              />
             <Image
               source={require("../icons/imagem-de-capa-indisponivel.png")}
               style={{
@@ -81,7 +62,7 @@ const TelaInicial = () => {
                 borderRadius: 10,
                 marginRight: 10,
               }}
-            />
+              />
             <Image
               source={require("../icons/imagem-de-capa-indisponivel.png")}
               style={{
@@ -90,18 +71,18 @@ const TelaInicial = () => {
                 borderRadius: 10,
                 marginRight: 10,
               }}
-            />
+              />
           </View>
+        </ScrollView>
         </View>
 
-        <View style={styles.viewBotao}>
-          <Button
-            mode="contained"
+        <View style={styles.viewBtn}>
+          <TouchableOpacity
             onPress={handleOpenLibrary}
-            style={styles.button}
+            style={styles.btn}
           >
-            Acessar biblioteca Pessoal
-          </Button>
+            <Text style={styles.textBtn}>Acessar biblioteca Pessoal</Text>
+          </TouchableOpacity>
         </View>
 
       </View>
@@ -112,26 +93,31 @@ const TelaInicial = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#104C87",
+    backgroundColor: "#041A30",
   },
-  viewBotao: {
+  viewBtn: {
     // justifyContent: "center",
     alignItems: "center",
   },
-  button: {
+  btn: {
     // marginBottom: 16,
     marginTop: 30,
     backgroundColor: "#204C77",
-    width: 300,
-    height: 70,
+    width: 250,
+    height: 30,
     borderRadius: 10,
+    justifyContent: 'center',
+    alignItems:"center"
+  },
+  textBtn: {
+    color:'#fff'
   },
   apresentacao: {
     justifyContent: "center",
     alignItems: "center",
     marginTop: 100,
   },
-  olaUsuario: {
+  textApresentacao: {
     height: 90,
     padding: 20,
     color: "#fff",
@@ -140,7 +126,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#041A30",
     borderRadius: 10,
   },
-  atividadesRecentes: {
+  viewAtividadesRecentes: {
     marginTop: 50,
     marginLeft: 10,
     fontSize: 20,
@@ -152,13 +138,6 @@ const styles = StyleSheet.create({
   },
   livrosAtvRecentes: {
     flexDirection: "row",
-  },
-  fabGroup: {
-    position: "absolute",
-    color: "#041A30",
-    margin: 16,
-    right: 0,
-    bottom: 0,
   },
 });
 
