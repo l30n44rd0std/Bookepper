@@ -1,22 +1,20 @@
 import { useState } from "react";
-import { View, StyleSheet, Text, Image } from "react-native";
+import { View, StyleSheet, Text, Image, TextInput, TouchableOpacity, ToastAndroid } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { TextInput, Button } from "react-native-paper";
-import requestsUser from "../api/requests/user";
 
+import requestsUser from "../api/requests/user";
 import { useUserContext } from '../UserContext';
 
 export default function TelaLogin() {
   //criando estados p/ e-mail e senha
   const { updateUser } = useUserContext();
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   //navegação p/ outras telas
   const navigation = useNavigation();
 
-  const navegarParaTelaCriarConta = () => {
+  const handleTelaCriarConta = () => {
     navigation.navigate("TelaCriarConta");
   };
   const navegarParaTelaInicial = () => {
@@ -24,13 +22,34 @@ export default function TelaLogin() {
   };
 
   const handleLogin = async () => {
-    try {
-      const response = await requestsUser.login({username: username, email: email, password: password})
-      const user = { username: response.data?.username, email: email, password: password }
 
-      updateUser(user);
-      console.log('Sucesso no Login', response.data);
-      navigation.navigate("BottomTabNavigator");
+    try {
+      const response = await requestsUser.login({email: email, password: password});
+      const user = { email: email, password: password };
+  
+      if (user.email == '' || user.password == '') {
+        console.info('E-mail e/ou senha vazios.')
+        ToastAndroid.showWithGravityAndOffset(
+          'E-mail e/ou senha vazios.',
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
+      } else {
+        updateUser(user);
+        console.log('Sucesso no Login', response.data);
+
+        navigation.navigate("BottomTabNavigator");
+        ToastAndroid.showWithGravityAndOffset(
+          'Sucesso no login!',
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );    
+      }
+  
     } catch (error) {
       console.error('Falha no login', error);
       if (error.response){
@@ -38,6 +57,14 @@ export default function TelaLogin() {
         console.log('Status:', error.response.status);
         console.log('Headers:', error.response.headers);
       }
+  
+      ToastAndroid.showWithGravityAndOffset(
+        'E-mail/senha incorretos ou usuário não cadastrado.',
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
     }
   };
 
@@ -50,6 +77,7 @@ export default function TelaLogin() {
       </Text>
 
       <View style={styles.formulario}>
+        <Text style={{color:'#fff', paddingBottom: 5}}>E-mail</Text>
         <TextInput
         label="E-mail"
         placeholder="Digite o e-mail"
@@ -59,6 +87,8 @@ export default function TelaLogin() {
         keyboardType="email-address"
         autoCapitalize="none"
         />
+        
+        <Text style={{color:'#fff', paddingBottom: 5}}>Senha</Text>
         <TextInput
         placeholder="Senha"
         value={password}
@@ -68,23 +98,22 @@ export default function TelaLogin() {
         // right={<TextInput.Icon name="eye" />}
         />
 
-        <Button
-          mode="contained"
-          style={styles.botao}
+        <TouchableOpacity
+          style={styles.btn}
           onPress={handleLogin}
         >
-          Entrar
-        </Button>
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>Entrar</Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.footer}>
-        <Text style={styles.textoAbaixoDoBotao}>Não tem uma conta?</Text>
-        <Button
-          onPress={navegarParaTelaCriarConta}
-          style={styles.textoLinkCriarConta}
+      <View style={{ marginTop: 30}}>
+        <Text style={{color: '#fff'}}>Não tem uma conta?</Text>
+        <Text
+          onPress={handleTelaCriarConta}
+          style={{color: '#fff', fontWeight: 'bold', textAlign: "center",}}
         >
           Criar Conta
-        </Button>
+        </Text>
       </View>
     </View>
   );
@@ -124,7 +153,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    borderRadius: 5,
+    borderRadius: 10,
     marginBottom: 15,
     placeholder: "#1F1F1F",
     placeholderTextColor: "#1F1F1F",
@@ -132,23 +161,21 @@ const styles = StyleSheet.create({
     color: "#1F1F1F",
     backgroundColor: "#7BAFE3",
     // outlineStyle: '#1F1F1F'
-    fontSize: 16
+    fontSize: 16,
+    height: 40,
+    paddingLeft: 14
   },
 
-  botao: {
+  btn: {
     uppercase: "",
+    color: "#4E0189",
     backgroundColor: "#104C87",
-    borderRadius: 5,
-    marginTop: 25,
-    marginBottom: 30,
-  },
-  textoAbaixoDoBotao: {
-    color: "#ffff",
-  },
-  textoLinkCriarConta: {
-    color: "#ffff",
-    marginTop: 0.5,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
+    borderRadius: 8,
+    height: 50,
+    width: "100%",
+    marginTop: 15,
+    marginBottom: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  }
 });
