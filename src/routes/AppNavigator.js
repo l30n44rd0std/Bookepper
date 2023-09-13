@@ -24,7 +24,8 @@ const EntradaStack = () => {
       />
       <Stack.Screen 
         name="TelaCriarConta" 
-        component={TelaCriarConta} 
+        component={TelaCriarConta}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="BottomTabNavigator"
@@ -34,6 +35,7 @@ const EntradaStack = () => {
       <Stack.Screen 
         name="EditarInfoUsuario"
         component={TelaEditarInfo}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="TelaPesquisa"
