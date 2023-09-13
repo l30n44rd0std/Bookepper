@@ -5,14 +5,11 @@ import {
   Text,
   Image,
   FlatList,
+  ScrollView,
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { 
-  Appbar, 
-  Searchbar,
-  Button,
-} from "react-native-paper";
+import { Appbar, Searchbar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 const TelaPesquisa = () => {
@@ -41,10 +38,8 @@ const TelaPesquisa = () => {
   const navigation = useNavigation();
 
   const handleBookPress = (book) => {
-    console.log("handleBookPress");
     navigation.navigate("TelaDetalhesLivro", { book, googleId: book.id });
   };
-
 
   const renderItem = ({ item }) => (
     <TouchableOpacity key={item.id} onPress={() => handleBookPress(item)}>
@@ -60,8 +55,8 @@ const TelaPesquisa = () => {
             style={{ width: 200, height: 300, borderRadius: 15 }}
           />
         )}
-        <Text style={{ color: '#fff' }}>{item.title}</Text>
-        <Text style={{ color: '#fff' }}>Autor: {item.authors?.join(", ")}</Text>
+        <Text style={{ color: "#fff", fontWeight: "bold" }}>{item.title}</Text>
+        <Text style={{ color: "#fff" }}>{item.authors?.join(", ")}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -69,10 +64,19 @@ const TelaPesquisa = () => {
   return (
     <>
       <View style={styles.container}>
-      <StatusBar style="auto" />
+        <StatusBar style="auto" />
 
         <Appbar.Header style={{ backgroundColor: "#1975D2" }}>
-          <Text style={{ fontSize: 30, fontWeight: "bold", color: '#fff', paddingLeft: 10 }}>Explorar</Text>
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              color: "#fff",
+              paddingLeft: 10,
+            }}
+          >
+            Explorar
+          </Text>
         </Appbar.Header>
 
         <Searchbar
@@ -81,20 +85,39 @@ const TelaPesquisa = () => {
           value={query}
           onChangeText={setQuery}
         />
-        <Button mode="contained" onPress={searchBooks} style={styles.botaoPesquisar}>
-          Buscar
-        </Button>
+        <TouchableOpacity onPress={searchBooks} style={styles.btnPesquisar}>
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>Buscar</Text>
+        </TouchableOpacity>
 
-        <View style={styles.listaResultado}>
-          {bookData && (
-            <FlatList
-              data={bookData}
-              renderItem={renderItem}
-              keyExtractor={(items) => items.id}
-              ListEmptyComponent={() => <Text>Nenhum livro encontrado.</Text>}
-            />
+        <ScrollView style={styles.listaResultado} showsVerticalScrollIndicator={false}>
+          {bookData &&
+            bookData.map((item, index) => (
+              <TouchableOpacity key={index} onPress={() => handleBookPress(item)}>
+                <View style={{ marginBottom: 16 }}>
+                  {item.imageLinks && item.imageLinks.thumbnail ? (
+                    <Image
+                      source={{ uri: item.imageLinks.thumbnail }}
+                      style={{ width: 200, height: 300, borderRadius: 15 }}
+                    />
+                  ) : (
+                    <Image
+                      source={require("../icons/imagem-de-capa-indisponivel.png")}
+                      style={{ width: 200, height: 300, borderRadius: 15 }}
+                    />
+                  )}
+                  <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                    {item.title}
+                  </Text>
+                  <Text style={{ color: "#fff" }}>
+                    {item.authors?.join(", ")}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          {bookData && bookData.length === 0 && (
+            <Text style={{ color: "#fff" }}>Nenhum livro encontrado.</Text>
           )}
-        </View> 
+        </ScrollView>
       </View>
     </>
   );
@@ -103,7 +126,7 @@ const TelaPesquisa = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#104C87",
+    backgroundColor: "#041A30",
   },
   searchBar: {
     borderRadius: 25,
@@ -113,7 +136,7 @@ const styles = StyleSheet.create({
     textColor: "#1F1F1F",
     color: "#1F1F1F",
     backgroundColor: "#7BAFE3",
-    margin: 8
+    margin: 8,
   },
   listaResultado: {
     padding: 15,
@@ -121,13 +144,17 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     textColor: "#FFFF",
   },
-  botaoPesquisar: {
+  btnPesquisar: {
     backgroundColor: "#204C77",
-    width: 200,
+    width: 400,
+    height: 30,
     borderRadius: 10,
-    fontWeight:"normal",
-    marginLeft: 140
-  }
+    fontWeight: "normal",
+    marginLeft: 40,
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+  },
 });
 
 export default TelaPesquisa;
