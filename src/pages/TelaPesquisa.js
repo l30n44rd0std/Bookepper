@@ -4,7 +4,6 @@ import {
   View,
   Text,
   Image,
-  FlatList,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
@@ -24,7 +23,7 @@ const TelaPesquisa = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.items && data.items.length > 0) {
-          const books = data.items.map((item) => item.volumeInfo);
+          const books = data.items.map((item) => item);
           setBookData(books);
           setTotalResults(data.totalItems);
         } else {
@@ -38,28 +37,29 @@ const TelaPesquisa = () => {
   const navigation = useNavigation();
 
   const handleBookPress = (book) => {
+    console.log('telapesquisa', book);
     navigation.navigate("TelaDetalhesLivro", { book, googleId: book.id });
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity key={item.id} onPress={() => handleBookPress(item)}>
-      <View style={{ marginBottom: 16 }}>
-        {item.imageLinks && item.imageLinks.thumbnail ? (
-          <Image
-            source={{ uri: item.imageLinks.thumbnail }}
-            style={{ width: 200, height: 300, borderRadius: 15 }}
-          />
-        ) : (
-          <Image
-            source={require("../icons/imagem-de-capa-indisponivel.png")}
-            style={{ width: 200, height: 300, borderRadius: 15 }}
-          />
-        )}
-        <Text style={{ color: "#fff", fontWeight: "bold" }}>{item.title}</Text>
-        <Text style={{ color: "#fff" }}>{item.authors?.join(", ")}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+  // const renderItem = ({ item }) => (
+  //   <TouchableOpacity key={item.id} onPress={() => handleBookPress(item)}>
+  //     <View style={{ marginBottom: 16 }}>
+  //       {item.imageLinks && item.imageLinks.thumbnail ? (
+  //         <Image
+  //           source={{ uri: item.imageLinks.thumbnail }}
+  //           style={{ width: 200, height: 300, borderRadius: 15 }}
+  //         />
+  //       ) : (
+  //         <Image
+  //           source={require("../icons/imagem-de-capa-indisponivel.png")}
+  //           style={{ width: 200, height: 300, borderRadius: 15 }}
+  //         />
+  //       )}
+  //       <Text style={{ color: "#fff", fontWeight: "bold" }}>{item.title}</Text>
+  //       <Text style={{ color: "#fff" }}>{item.authors?.join(", ")}</Text>
+  //     </View>
+  //   </TouchableOpacity>
+  // );
 
   return (
     <>
@@ -94,9 +94,9 @@ const TelaPesquisa = () => {
             bookData.map((item, index) => (
               <TouchableOpacity key={index} onPress={() => handleBookPress(item)}>
                 <View style={{ marginBottom: 16 }}>
-                  {item.imageLinks && item.imageLinks.thumbnail ? (
+                  {item.volumeInfo.imageLinks && item.volumeInfo.imageLinks.thumbnail ? (
                     <Image
-                      source={{ uri: item.imageLinks.thumbnail }}
+                      source={{ uri: item.volumeInfo.imageLinks.thumbnail }}
                       style={{ width: 200, height: 300, borderRadius: 15 }}
                     />
                   ) : (
@@ -106,10 +106,10 @@ const TelaPesquisa = () => {
                     />
                   )}
                   <Text style={{ color: "#fff", fontWeight: "bold" }}>
-                    {item.title}
+                    {item.volumeInfo.title}
                   </Text>
                   <Text style={{ color: "#fff" }}>
-                    {item.authors?.join(", ")}
+                    {item.volumeInfo.authors?.join(", ")}
                   </Text>
                 </View>
               </TouchableOpacity>

@@ -13,7 +13,7 @@ const BibliotecaPessoal = () => {
   useEffect(() => {
     async function fetchUserLibrary() {
       const books = await getUserLibrary();
-      // console.log('Na TelaBibliotecaPessoal, books é: ', books);
+      console.log('Na TelaBibliotecaPessoal, books é: ', books);
       setUserBooks(books);
       // console.log('Na TelaBibliotecaPessoal, userBooks é: ', userBooks)
     }
@@ -38,10 +38,13 @@ const BibliotecaPessoal = () => {
       case 'finalizado':
         return '#0ABA31'; //Verde
       case 'lendo':
+      case 'Lendo':
         return '#C0AF0E'; // Amarelo
       case 'quero_ler':
+      case 'Quero ler':
         return '#017790'; // Azul
       case 'abandonei':
+      case 'Abandonado':
       case 'abandonado':
         return '#451F04'; // Marrom
       default:
@@ -56,8 +59,11 @@ const BibliotecaPessoal = () => {
     return book === filter;
   });
 
-  const handleInfoBook = (googleId) => {
-    navigation.navigate("TelaDetalhesLivro", { googleId });
+  const handleInfoBook = (item) => {
+    console.log('====================================');
+    console.log(item);
+    console.log('====================================');
+    navigation.navigate("TelaDetalhesLivro", {googleId: item.google_id});
   };
   
 
@@ -114,7 +120,7 @@ const BibliotecaPessoal = () => {
               <Text style={{color: '#fff', marginTop: 3,}}>{item.autor ? item.autor : 'Autor não encontrado'}</Text>
 
               <View style={{flexDirection: "row"}}>
-                <TouchableOpacity style={styles.btnInfo} onPress={handleInfoBook}> 
+                <TouchableOpacity style={styles.btnInfo} onPress={() => handleInfoBook(item) }> 
                   <Text style={styles.textBtnInfo}>+Info</Text>
                 </TouchableOpacity>
                 <Text style={[styles.status, { backgroundColor: getColorForStatus(item.status) }]}>{item.status ? item.status : 'Indisponível'}</Text>

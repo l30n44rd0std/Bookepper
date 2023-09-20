@@ -12,13 +12,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { addBookToLibrary } from "../BookStorage";
+import { useUserContext } from "../UserContext";
 
 const DetalhesLivro = ({ route }) => {
   const [book, setBook] = useState(route.params?.book || null);
-  const { googleId } = route.params;
+  const {googleId} = route.params;
+  console.log(googleId);
 
   const [showDialog, setShowDialog] = useState(false);
   const [readingStatus, setReadingStatus] = useState("");
+
+  const { user } = useUserContext();
   
   useEffect(() => {
     const carregarLivro = () => {
@@ -32,7 +36,7 @@ const DetalhesLivro = ({ route }) => {
       .catch((error) => console.error(error));
     };
     if (!book) carregarLivro();
-  }, [googleId]);
+  }, [book]);
   
   const handleAmazonLink = () => {
     const formattedTitle = book.title.replace(/ /g, "+");
@@ -47,18 +51,21 @@ const DetalhesLivro = ({ route }) => {
     setReadingStatus(status);
     
     // console.log('dentro de handleAdicionarNaLivraria, valor do book: ', book)
-    const newBook = {
-      imagem_capa: book.imageLinks.thumbnail,
-      titulo: book.title,
-      autor: book.authors,
-      usuario_id: 1,
-      google_id: googleId,
-      status: readingStatus,
-    };
-    console.log("TelaDetalhesLivro book", book);
-    console.log("TelaDetalhesLivro newBook", newBook);
+    // if(googleId && user && user.id) {
 
-    addBookToLibrary(newBook);
+      const newBook = {
+        imagem_capa: book?.volumeInfo.imageLinks.thumbnail,
+        titulo: book?.volumeInfo.title,
+        autor: book?.volumeInfo.authors,
+        usuario_id: user.id,
+        google_id: googleId,
+        status: readingStatus,
+      };
+      console.log("TelaDetalhesLivro book", book);
+      console.log("TelaDetalhesLivro newBook", newBook);
+      
+      await addBookToLibrary(newBook);
+    // }
   };
 
   return (
@@ -68,9 +75,9 @@ const DetalhesLivro = ({ route }) => {
           <View style={styles.container}>
             <View style={styles.header}>
               <View style={styles.viewCapa}>
-                {book.imageLinks && book.imageLinks.thumbnail ? (
+                {book?.volumeInfo?.imageLinks && book?.volumeInfo?.imageLinks?.thumbnail ? (
                   <Image
-                    source={{ uri: book.imageLinks.thumbnail }}
+                    source={{ uri: book?.volumeInfo?.imageLinks?.thumbnail }}
                     style={styles.capa}
                   />
                 ) : (
@@ -82,29 +89,21 @@ const DetalhesLivro = ({ route }) => {
               </View>
 
               <View style={styles.container2}>
-                <Text style={styles.titulo}>{book?.title}</Text>
-                <Text style={styles.autor}>{book?.authors?.join(", ")}</Text>
-                <Text style={styles.informacoes}>
-                  Editora: {book?.publisher}
-                </Text>
-                <Text style={styles.informacoes}>
-                  Publicação: {book?.publishedDate}
-                </Text>
-                <Text style={styles.informacoes}>
-                  ISBN: {book?.industryIdentifiers?.[0]?.identifier}
-                </Text>
-                <Text style={styles.informacoes}>
-                  Categoria: {book?.categories?.join(", ")}
-                </Text>
+                <Text style={styles.titulo}>{book?.volumeInfo?.title}</Text>
+                <Text style={styles.autor}>{book?.volumeInfo?.authors?.join(", ")}</Text>
+                <Text style={styles.informacoes}>Editora: {book?.volumeInfo?.publisher}</Text>
+                <Text style={styles.informacoes}>Publicação: {book?.volumeInfo?.publishedDate}</Text>
+                <Text style={styles.informacoes}>ISBN: {book?.volumeInfo?.industryIdentifiers?.[0]?.identifier}</Text>
+                <Text style={styles.informacoes}>Categoria: {book?.volumeInfo?.categories?.join(", ")}</Text>
               </View>
 
               <View style={styles.container3}>
                 <Text style={styles.informacoes}>
-                  Avaliações: {book?.averageRating}
+                  Avaliações: {book?.volumeInfo?.averageRating}
                 </Text>
                 <Text style={styles.informacoes}>Tipo: Físico</Text>
                 <Text style={styles.informacoes}>
-                  Número de páginas: {book?.pageCount}
+                  Número de páginas: {book?.volumeInfo?.pageCount}
                 </Text>
               </View>
 
@@ -127,7 +126,7 @@ const DetalhesLivro = ({ route }) => {
 
             <View style={styles.descricao}>
               <Text style={styles.descricaoTitulo}>Descrição</Text>
-              <Text style={styles.descricaoTexto}>{book?.description}</Text>
+              <Text style={styles.descricaoTexto}>{book?.volumeInfo?.description}</Text>
             </View>
 
             {book && (
@@ -190,6 +189,9 @@ const styles = StyleSheet.create({
   },
   container4: {
     flexDirection: "row",
+  },
+  autor: {
+    color: '#fff'
   },
   capa: {
     width: 200,
