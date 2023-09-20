@@ -5,6 +5,8 @@ const BOOKS_KEY = "user_books";
 export const addBookToLibrary = async (book) => {
   try {
     const existingBooks = await AsyncStorage.getItem(BOOKS_KEY);
+
+    
     let userBooks = [];
 
     if (existingBooks) {
