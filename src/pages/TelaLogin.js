@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, StyleSheet, Text, Image, TextInput, TouchableOpacity, ToastAndroid } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 import requestsUser from "../api/requests/user";
 import { useUserContext } from '../UserContext';
@@ -10,6 +11,7 @@ export default function TelaLogin() {
   const { updateUser } = useUserContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   //navegação p/ outras telas
   const navigation = useNavigation();
@@ -17,18 +19,14 @@ export default function TelaLogin() {
   const handleTelaCriarConta = () => {
     navigation.navigate("TelaCriarConta");
   };
-  const navegarParaTelaInicial = () => {
-    navigation.navigate("BottomTabNavigator");
-  };
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  }
 
   const handleLogin = async () => {
-
     try {
-      const response = await requestsUser.login({email: email, password: password});
-      const user = { email: email, password: password };
-  
-      if (user.email == '' || user.password == '') {
-        console.info('E-mail e/ou senha vazios.')
+      if (email === '' || password === '') {
+        console.info('E-mail e/ou senha vazios.');
         ToastAndroid.showWithGravityAndOffset(
           'E-mail e/ou senha vazios.',
           ToastAndroid.LONG,
@@ -36,20 +34,23 @@ export default function TelaLogin() {
           25,
           50
         );
-      } else {
-        updateUser(user);
-        console.log('Sucesso no Login', response.data);
-
-        navigation.navigate("BottomTabNavigator");
-        ToastAndroid.showWithGravityAndOffset(
-          'Sucesso no login!',
-          ToastAndroid.LONG,
-          ToastAndroid.BOTTOM,
-          25,
-          50
-        );    
+        return;
       }
-  
+
+      const response = await requestsUser.login({ email: email, password: password });
+
+      updateUser({ email: email, username: response.data.username }); // Inclua o nome de usuário do servidor na atualização do usuário
+
+      console.log('Sucesso no Login', response.data);
+
+      navigation.navigate("BottomTabNavigator");
+      ToastAndroid.showWithGravityAndOffset(
+        'Sucesso no login!',
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
     } catch (error) {
       console.error('Falha no login', error);
       if (error.response){
@@ -57,7 +58,7 @@ export default function TelaLogin() {
         console.log('Status:', error.response.status);
         console.log('Headers:', error.response.headers);
       }
-  
+
       ToastAndroid.showWithGravityAndOffset(
         'E-mail/senha incorretos ou usuário não cadastrado.',
         ToastAndroid.LONG,
@@ -89,14 +90,23 @@ export default function TelaLogin() {
         />
         
         <Text style={{color:'#fff', paddingBottom: 5}}>Senha</Text>
+        <View style={styles.passwordInputContainer}>
         <TextInput
         placeholder="Senha"
         value={password}
         onChangeText={setPassword}
-        style={styles.input}
-        secureTextEntry //oculta o que é digitado
-        // right={<TextInput.Icon name="eye" />}
+        style={[styles.input, {flex: 1, height: 40, width: '100%'}]}
+        secureTextEntry={!showPassword}
         />
+        <TouchableOpacity onPress={togglePasswordVisibility}>
+          <Icon
+            name={showPassword ? "eye" : "eye-slash"}
+            size={20}
+            color="#1F1F1F"
+            style={{ paddingRight: 20, position: "absolute" }}
+          />
+        </TouchableOpacity>
+        </View>
 
         <TouchableOpacity
           style={styles.btn}
@@ -165,7 +175,12 @@ const styles = StyleSheet.create({
     height: 40,
     paddingLeft: 14
   },
-
+  passwordInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    // borderBottomWidth: 1,
+    // borderBottomColor: "#1F1F1F",
+  },
   btn: {
     uppercase: "",
     color: "#4E0189",
