@@ -4,21 +4,21 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import requestsUser from "../api/requests/user";
 
-import { useUserContext } from '../UserContext';
+import { useUserContext } from "../UserContext";
 
 const TelaPerfil = () => {
   const { user } = useUserContext();
 
-    // const loadPerfil = async () => {
-    //   try {
-    //     const response = await requestsUser.loadProfile({ username: username, email: email }); // Chame a função loadProfile do módulo requestsUser
-    //     setUser(response.data);
-    //     setUsername(response.data.username);
-    //     setEmail(response.data.email);
-    //   } catch (error) {
-    //     console.error("Erro ao carregar perfil:", error);
-    //   }
-    // };
+  // const loadPerfil = async () => {
+  //   try {
+  //     const response = await requestsUser.loadProfile({ username: username, email: email }); // Chame a função loadProfile do módulo requestsUser
+  //     setUser(response.data);
+  //     setUsername(response.data.username);
+  //     setEmail(response.data.email);
+  //   } catch (error) {
+  //     console.error("Erro ao carregar perfil:", error);
+  //   }
+  // };
 
   const navigation = useNavigation();
 
@@ -28,7 +28,7 @@ const TelaPerfil = () => {
 
   const handleEditProfile = () => {
     navigation.navigate("EditarInfoUsuario");
-  }
+  };
 
   const handleLogout = () => {
     // Lógica para sair da conta do usuário
@@ -41,17 +41,25 @@ const TelaPerfil = () => {
 
   return (
     <View style={styles.container}>
-        <View style={styles.profileContainer}>
-            <Avatar.Image source={require('../icons/clicia.jpg')} size={400} />
-          <Text style={styles.nome}>{user.username}</Text>
-          <Text style={styles.email}>{user.email}</Text>
-          <IconButton
-            icon="pencil"
-            mode="contained"
-            size={20}
-            onPress={handleEditProfile}
-          />
+      <View style={styles.profileContainer}>
+        <Avatar.Image source={require("../icons/clicia.jpg")} size={200} />
+        <Text style={styles.nome}>{user.username}</Text>
+        <Text style={styles.email}>{user.email}</Text>
+        <IconButton
+          icon="pencil"
+          mode="contained"
+          size={20}
+          onPress={handleEditProfile}
+        />
+        <View
+          style={{
+            width: "100%",
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            borderBottomColor: "white",
+            marginVertical: 30,
+          }}>
         </View>
+      </View>
 
       <Button
         mode="contained"

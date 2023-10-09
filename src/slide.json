@@ -1,0 +1,37 @@
+[
+  {
+    "key": "1",
+    "title": "Bem-vindo",
+    "text": "a uma melhor forma de manter o hábito de leitura, organiza e descobrir livros.",
+    "image": "../icons/bookepper.png",
+    "backgroundColor": "#1975D2"
+  },
+  {
+    "key": "2",
+    "title": "Encontre seu ritmo",
+    "text": "Calcule sua velocidade de leitura e descubra quanto tempo precisa ler por dia para alcançar seus objetivos.",
+    "image": "../icons/clock.png",
+    "backgroundColor": "#1975D2"
+  },
+  {
+    "key": "3",
+    "title": "Organize seus livros",
+    "text": "Tenha todos os livros que você já leu, vai ler ou está lendo na biblioteca virtual.",
+    "image": "../icons/bookcase.png",
+    "backgroundColor": "#1975D2"
+  },
+  {
+    "key": "4",
+    "title": "Novas histórias",
+    "text": "Explore e encontre novos universos de acordo com seu autor preferido.",
+    "image": "../icons/open-book-NewStories.png",
+    "backgroundColor": "#1975D2"
+  },
+  {
+    "key": "5",
+    "title": "Avaliações",
+    "text": "Veja avaliações de outras pessoas e diga o que achou sobre livros.",
+    "image": "../icons/star.png",
+    "backgroundColor": "#1975D2"
+  }
+]
