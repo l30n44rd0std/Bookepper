@@ -35,3 +35,16 @@ export const getUserLibrary = async () => {
     return [];
   }
 };
+
+export const removeBookFromLibrary = async (googleId) => {
+  try {
+    const existingBooks = await getUserLibrary();
+    const updatedBooks = existingBooks.filter((item) => item.google_id !== googleId);
+    await AsyncStorage.setItem(BOOKS_KEY, JSON.stringify(updatedBooks));
+  } catch (error) {
+    console.log("Erro ao remover livro da biblioteca: ", error);
+    throw error;
+  }
+};
+
+
