@@ -1,12 +1,16 @@
 // import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Appbar, Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 import { useUserContext } from '../UserContext';
+import { getUserLibrary } from '../BookStorage';
 import { ScrollView } from "react-native-gesture-handler";
 
 const TelaInicial = () => {
+
+  const [userBooks, setUserBooks] = useState([]);
   const navigation = useNavigation();
 
   const handleOpenLibrary = () => {
@@ -15,6 +19,18 @@ const TelaInicial = () => {
 
   const { user } = useUserContext();
   console.log(user);
+
+
+  useEffect(() => {
+    async function fetchUserLibrary() {
+      const books = await getUserLibrary();
+      console.log('Na TelaInicial, books é: ', books);
+      setUserBooks(books);
+      // console.log('Na TelaBibliotecaPessoal, userBooks é: ', userBooks)
+    }
+
+    fetchUserLibrary();
+  }, []);
 
   return (
     <>
@@ -44,35 +60,22 @@ const TelaInicial = () => {
           </Text>
 
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <View style={styles.livrosAtvRecentes}>
-            <Image
-              source={require("../icons/imagem-de-capa-indisponivel.png")}
-              style={{
-                width: 200,
-                height: 300,
-                borderRadius: 10,
-                marginRight: 10,
-              }}
+          {userBooks && userBooks.map ((book, index) => (
+          <View style={styles.livrosAtvRecentes} key={index}>
+            <TouchableOpacity>
+             <Image
+                source={{uri: book.imagem_capa}}
+                resizeMode="contain"
+                style={{
+                  width: 200,
+                  height: 300,
+                  borderRadius: 10,
+                  marginRight: 10,
+                }}
               />
-            <Image
-              source={require("../icons/imagem-de-capa-indisponivel.png")}
-              style={{
-                width: 200,
-                height: 300,
-                borderRadius: 10,
-                marginRight: 10,
-              }}
-              />
-            <Image
-              source={require("../icons/imagem-de-capa-indisponivel.png")}
-              style={{
-                width: 200,
-                height: 300,
-                borderRadius: 10,
-                marginRight: 10,
-              }}
-              />
+            </TouchableOpacity>
           </View>
+          )) }
         </ScrollView>
         </View>
 
