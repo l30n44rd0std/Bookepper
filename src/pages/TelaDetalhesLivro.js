@@ -14,6 +14,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { addBookToLibrary } from "../BookStorage";
 import { useUserContext } from "../UserContext";
 
+import { useNavigation } from "@react-navigation/native";
+
 const DetalhesLivro = ({ route }) => {
   const [book, setBook] = useState(route.params?.book || null);
   const {googleId} = route.params;
@@ -68,6 +70,15 @@ const DetalhesLivro = ({ route }) => {
     // }
   };
 
+  const navigation = useNavigation();
+  const handleTelaAutor = () => {
+    if (book?.volumeInfo?.authors) {
+      const authorName = book.volumeInfo.authors.join(", ");
+      console.log("TelaDetalhesLivro, authorName é ", authorName)
+      navigation.navigate("TelaAutor", { authorName })
+    }
+  };
+
   return (
     <Provider>
       <>
@@ -90,7 +101,9 @@ const DetalhesLivro = ({ route }) => {
 
               <View style={styles.container2}>
                 <Text style={styles.titulo}>{book?.volumeInfo?.title}</Text>
-                <Text style={styles.autor}>{book?.volumeInfo?.authors?.join(", ")}</Text>
+                <TouchableOpacity onPress={() => handleTelaAutor()}>
+                  <Text style={styles.autor}>{book?.volumeInfo?.authors?.join(", ")}</Text>
+                </TouchableOpacity>
                 <Text style={styles.informacoes}>Editora: {book?.volumeInfo?.publisher}</Text>
                 <Text style={styles.informacoes}>Publicação: {book?.volumeInfo?.publishedDate}</Text>
                 <Text style={styles.informacoes}>ISBN: {book?.volumeInfo?.industryIdentifiers?.[0]?.identifier}</Text>
