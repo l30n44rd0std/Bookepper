@@ -11,6 +11,7 @@ import TelaPerfil from "../pages/TelaPerfil";
 import TelaDetalhesLivro from "../pages/TelaDetalhesLivro";
 import TelaBibliotecaPessoal from "../pages/TelaBibliotecaPessoal";
 import TelaEditarInfo from "../pages/TelaEditarInfo.js";
+import TelaAutor from "../pages/TelaAutor.js";
 
 const Stack = createStackNavigator();
 
@@ -55,6 +56,11 @@ const EntradaStack = () => {
       <Stack.Screen
         name="TelaBibliotecaPessoal"
         component={TelaBibliotecaPessoal}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="TelaAutor"
+        component={TelaAutor}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
