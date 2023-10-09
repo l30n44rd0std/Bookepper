@@ -53,19 +53,23 @@ export default function TelaLogin() {
       );
     } catch (error) {
       console.error('Falha no login', error);
-      if (error.response){
-        console.log('Data:', error.response.data);
-        console.log('Status:', error.response.status);
-        console.log('Headers:', error.response.headers);
+      if (error.message === 'Network Error') {
+        ToastAndroid.showWithGravityAndOffset(
+          'Problema de Rede',
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
+      } else {
+        ToastAndroid.showWithGravityAndOffset(
+          'E-mail/senha incorretos ou usuário não cadastrado.',
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
       }
-
-      ToastAndroid.showWithGravityAndOffset(
-        'E-mail/senha incorretos ou usuário não cadastrado.',
-        ToastAndroid.LONG,
-        ToastAndroid.BOTTOM,
-        25,
-        50
-      );
     }
   };
 
