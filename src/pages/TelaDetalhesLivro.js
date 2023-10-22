@@ -5,9 +5,10 @@ import {
   Image,
   StyleSheet,
   Linking,
+  Modal,
   TouchableOpacity,
+  TextInput
 } from "react-native";
-import { Button, Modal, Portal, Provider } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -18,176 +19,298 @@ import { useNavigation } from "@react-navigation/native";
 
 const DetalhesLivro = ({ route }) => {
   const [book, setBook] = useState(route.params?.book || null);
-  const {googleId} = route.params;
-  console.log(googleId);
+  const { googleId } = route.params;
 
   const [showDialog, setShowDialog] = useState(false);
   const [readingStatus, setReadingStatus] = useState("");
 
   const { user } = useUserContext();
-  
+
+  const [review, setReview] = useState(""); //resenha do usuário sobre o livro
+
+  const [defaultRating, setDefaultRating] = useState(2);
+  const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
+  const starImgFilled =
+    "https://github.com/tranhonghan/images/blob/main/star_filled.png?raw=true";
+  const starImgCorner =
+    "https://github.com/tranhonghan/images/blob/main/star_corner.png?raw=true";
+  const CustomRatingBar = () => {
+    return (
+      <View style={styles.customRatingBarStyle}>
+        {maxRating.map((item, key) => {
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              key={item}
+              onPress={() => setDefaultRating(item)}
+            >
+              <Image
+                style={styles.starImgStyle}
+                source={
+                  item <= defaultRating
+                    ? { uri: starImgFilled }
+                    : { uri: starImgCorner }
+                }
+              />
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  };
+
   useEffect(() => {
     const carregarLivro = () => {
       const apiUrl = `https://www.googleapis.com/books/v1/volumes/${googleId}`;
-      
+
       fetch(apiUrl)
-      .then((response) => response.json())
-      .then((dataLivro) => {
-        setBook(dataLivro);
-      })
-      .catch((error) => console.error(error));
+        .then((response) => response.json())
+        .then((dataLivro) => {
+          setBook(dataLivro);
+        })
+        .catch((error) => console.error(error));
     };
     if (!book) carregarLivro();
   }, [book]);
-  
+
   const handleAmazonLink = () => {
     const formattedTitle = book.title.replace(/ /g, "+");
     const amazonLink = `https://www.amazon.com.br/s?k=${formattedTitle}`;
-    
+
     Linking.openURL(amazonLink);
   };
-  
-  const handleAdicionarNaLivraria = async (status) => {
-    console.log("entrou na handleAdicionarNaLivraria");
-    setShowDialog(false);
-    setReadingStatus(status);
-    
-    // console.log('dentro de handleAdicionarNaLivraria, valor do book: ', book)
-    // if(googleId && user && user.id) {
 
-      const newBook = {
-        imagem_capa: book?.volumeInfo.imageLinks.thumbnail,
-        titulo: book?.volumeInfo.title,
-        autor: book?.volumeInfo.authors,
-        usuario_id: user.id,
-        google_id: googleId,
-        status: readingStatus,
-      };
-      console.log("TelaDetalhesLivro book", book);
-      console.log("TelaDetalhesLivro newBook", newBook);
-      
-      await addBookToLibrary(newBook);
-    // }
+  // const handleAdicionarNaLivraria = async (status) => {
+  //   console.log("entrou na handleAdicionarNaLivraria");
+  //   setShowDialog(false);
+  //   setReadingStatus(status);
+
+  //     const newBook = {
+  //       imagem_capa: book?.volumeInfo.imageLinks.thumbnail,
+  //       titulo: book?.volumeInfo.title,
+  //       autor: book?.volumeInfo.authors,
+  //       usuario_id: user.id,
+  //       google_id: googleId,
+  //       status: readingStatus,
+  //     };
+  //     console.log("TelaDetalhesLivro book", book);
+  //     console.log("TelaDetalhesLivro newBook", newBook);
+
+  //     await addBookToLibrary(newBook);
+  // };
+
+  const handleAlterarStatus = async (status) => {
+    setReadingStatus(status);
+    console.log("Status alterado para: ", status);
+  };
+
+  const handleEnviarAdicionarNaLivraria = async () => {
+    const newBook = {
+      imagem_capa: book?.volumeInfo.imageLinks.thumbnail,
+      titulo: book?.volumeInfo.title,
+      autor: book?.volumeInfo.authors,
+      usuario_id: user.id,
+      google_id: googleId,
+      status: readingStatus,
+      avaliacao: defaultRating,
+      review: review
+    };
+
+    await addBookToLibrary(newBook);
+    setShowDialog(false);
+
+    console.log("newbook: ", newBook);
+    console.log("Adicionado/Alterado!");
   };
 
   const navigation = useNavigation();
   const handleTelaAutor = () => {
     if (book?.volumeInfo?.authors) {
       const authorName = book.volumeInfo.authors.join(", ");
-      console.log("TelaDetalhesLivro, authorName é ", authorName)
-      navigation.navigate("TelaAutor", { authorName })
+      console.log("TelaDetalhesLivro, authorName é ", authorName);
+      navigation.navigate("TelaAutor", { authorName });
     }
   };
 
   return (
-    <Provider>
-      <>
-        <ScrollView>
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <View style={styles.viewCapa}>
-                {book?.volumeInfo?.imageLinks && book?.volumeInfo?.imageLinks?.thumbnail ? (
-                  <Image
-                    source={{ uri: book?.volumeInfo?.imageLinks?.thumbnail }}
-                    style={styles.capa}
-                  />
-                ) : (
-                  <Image
-                    source={require("../icons/imagem-de-capa-indisponivel.png")}
-                    style={styles.capa}
-                  />
-                )}
-              </View>
-
-              <View style={styles.container2}>
-                <Text style={styles.titulo}>{book?.volumeInfo?.title}</Text>
-                <TouchableOpacity onPress={() => handleTelaAutor()}>
-                  <Text style={styles.autor}>{book?.volumeInfo?.authors?.join(", ")}</Text>
-                </TouchableOpacity>
-                <Text style={styles.informacoes}>Editora: {book?.volumeInfo?.publisher}</Text>
-                <Text style={styles.informacoes}>Publicação: {book?.volumeInfo?.publishedDate}</Text>
-                <Text style={styles.informacoes}>ISBN: {book?.volumeInfo?.industryIdentifiers?.[0]?.identifier}</Text>
-                <Text style={styles.informacoes}>Categoria: {book?.volumeInfo?.categories?.join(", ")}</Text>
-              </View>
-
-              <View style={styles.container3}>
-                <Text style={styles.informacoes}>
-                  Avaliações: {book?.volumeInfo?.averageRating}
-                </Text>
-                <Text style={styles.informacoes}>Tipo: Físico</Text>
-                <Text style={styles.informacoes}>
-                  Número de páginas: {book?.volumeInfo?.pageCount}
-                </Text>
-              </View>
-
-              <View style={styles.container4}>
-                <Button
-                  style={styles.botaoAmazon}
-                  mode="contained"
-                  onPress={handleAmazonLink}
-                >
-                  Ver na loja da Amazon
-                </Button>
-                <TouchableOpacity
-                  style={styles.botaoAdd}
-                  onPress={() => setShowDialog(true)}
-                >
-                  <Ionicons name="add" size={24} color="white" />
-                </TouchableOpacity>
-              </View>
+    <>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <View style={styles.viewCapa}>
+              {book?.volumeInfo?.imageLinks &&
+              book?.volumeInfo?.imageLinks?.thumbnail ? (
+                <Image
+                  source={{ uri: book?.volumeInfo?.imageLinks?.thumbnail }}
+                  style={styles.capa}
+                />
+              ) : (
+                <Image
+                  source={require("../icons/imagem-de-capa-indisponivel.png")}
+                  style={styles.capa}
+                />
+              )}
             </View>
 
-            <View style={styles.descricao}>
-              <Text style={styles.descricaoTitulo}>Descrição</Text>
-              <Text style={styles.descricaoTexto}>{book?.volumeInfo?.description}</Text>
+            <View style={styles.viewInfoAuthor}>
+              <Text style={styles.bookName}>{book?.volumeInfo?.title}</Text>
+              <TouchableOpacity onPress={() => handleTelaAutor()}>
+                <Text style={styles.authorName}>
+                  {book?.volumeInfo?.authors?.join(", ")}
+                </Text>
+              </TouchableOpacity>
+              <Text style={styles.info}>
+                Editora: {book?.volumeInfo?.publisher}
+              </Text>
+              <Text style={styles.info}>
+                Publicação: {book?.volumeInfo?.publishedDate}
+              </Text>
+              <Text style={styles.info}>
+                ISBN: {book?.volumeInfo?.industryIdentifiers?.[0]?.identifier}
+              </Text>
+              <Text style={styles.info}>
+                Categoria:
+                <Text style={styles.infoCategories}>
+                  {book?.volumeInfo?.categories?.join(", ")}
+                </Text>
+              </Text>
             </View>
+          </View>
+          <View style={styles.header2}>
+            <Text style={styles.info2}>
+              Avaliações: {book?.volumeInfo?.averageRating}
+            </Text>
+            <Text style={styles.info2}>Tipo: Físico</Text>
+            <Text style={styles.info2}>
+              Número de páginas: {book?.volumeInfo?.pageCount}
+            </Text>
+          </View>
 
-            {book && (
-              <Portal>
-                <Modal
-                  visible={showDialog}
-                  onDismiss={() => setShowDialog(false)}
-                  contentContainerStyle={styles.modalContainer}
-                >
-                  <View style={styles.conteudoModal}>
+          <View style={styles.header3}>
+            <View style={styles.viewBtns}>
+              <TouchableOpacity
+                style={styles.botaoAmazon}
+                onPress={handleAmazonLink}
+              >
+                <Text style={{ color: "#fff" }}>Ver na loja da Amazon</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.botaoAdd}
+                onPress={() => setShowDialog(true)}
+              >
+                <Ionicons name="add" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.descricao}>
+            <Text style={styles.descricaoTitulo}>Descrição</Text>
+            <Text style={styles.descricaoTexto}>
+              {book?.volumeInfo?.description}
+            </Text>
+          </View>
+
+          {book && (
+            <Modal
+              visible={showDialog}
+              transparent={true}
+              animationType="slide"
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.conteudoModal}>
+                  <View style={styles.modalHeader}>
                     <Text style={styles.tituloModal}>Leitura</Text>
-                    <Text style={styles.subtituloModal}>
-                      Status da leitura:
-                    </Text>
-                    <View style={styles.botoesModal}>
-                      <Button
-                        mode="contained"
-                        onPress={() => handleAdicionarNaLivraria("Já li")}
-                      >
-                        Já li
-                      </Button>
-                      <Button
-                        mode="contained"
-                        onPress={() => handleAdicionarNaLivraria("Lendo")}
-                      >
-                        Lendo
-                      </Button>
-                      <Button
-                        mode="contained"
-                        onPress={() => handleAdicionarNaLivraria("Quero Ler")}
-                      >
-                        Quero Ler
-                      </Button>
-                      <Button
-                        mode="contained"
-                        onPress={() => handleAdicionarNaLivraria("Abandonado")}
-                      >
-                        Abandonado
-                      </Button>
+                    <TouchableOpacity onPress={() => setShowDialog(false)}>
+                      <Ionicons name="close" size={30} color="#000" />
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={styles.subtituloModal}>Status da leitura:</Text>
+                  <View style={styles.botoesModal}>
+                    <TouchableOpacity
+                      onPress={() => handleAlterarStatus("Já li")}
+                      style={styles.btnStatus}
+                    >
+                      <Text style={styles.btnStatusText}>Já Li</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => handleAlterarStatus("Lendo")}
+                      style={styles.btnStatus}
+                    >
+                      <Text style={styles.btnStatusText}>Lendo</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => handleAlterarStatus("Quero Ler")}
+                      style={styles.btnStatus}
+                    >
+                      <Text style={styles.btnStatusText}>Quero Ler</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => handleAlterarStatus("Abandonado")}
+                      style={styles.btnStatus}
+                    >
+                      <Text style={styles.btnStatusText}>Abandonado</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View
+                    style={{
+                      width: "100%",
+                      borderBottomWidth: StyleSheet.hairlineWidth,
+                      borderBottomColor: "blue",
+                      marginVertical: 30,
+                    }}
+                  ></View>
+
+                  <View style={styles.viewBookReview}>
+                    <Text style={styles.tituloModal}>Resenha</Text>
+
+                    <TextInput
+                      placeholder="Digite aqui o que você achou sobre o livro"
+                      style={styles.inputReview}
+                      value={review}
+                      onChangeText={setReview}
+                    />
+                  </View>
+
+                  <View
+                    style={{
+                      width: "100%",
+                      borderBottomWidth: StyleSheet.hairlineWidth,
+                      borderBottomColor: "black",
+                      marginVertical: 30,
+                    }}
+                  ></View>
+
+                  <View style={styles.viewRating}>
+                    <Text style={styles.tituloModal}>Avaliação</Text>
+                    <Text style={styles.subtituloModal}>Mudar avaliação:</Text>
+                    <View
+                      style={{ margin: 0, padding: 0, alignItems: "center" }}
+                    >
+                      <CustomRatingBar />
+                      <Text style={{ color: "#000" }}>
+                        {" "}
+                        {defaultRating + " / " + maxRating.length}{" "}
+                      </Text>
                     </View>
                   </View>
-                </Modal>
-              </Portal>
-            )}
-          </View>
-        </ScrollView>
-      </>
-    </Provider>
+
+                  <TouchableOpacity
+                    style={[styles.btnStatus, { marginTop: 40 }]}
+                    onPress={() => handleEnviarAdicionarNaLivraria()}
+                  >
+                    <Text style={styles.btnStatusText}>
+                      {" "}
+                      Adicionar ou alterar livro{" "}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          )}
+        </View>
+      </ScrollView>
+    </>
   );
 };
 
@@ -196,15 +319,33 @@ const styles = StyleSheet.create({
   header: {
     flex: 1,
     padding: 16,
-    paddingBottom: 100,
     backgroundColor: "#1975D2",
-    flexDirection: "column",
-  },
-  container4: {
     flexDirection: "row",
   },
-  autor: {
-    color: '#fff'
+  header2: {
+    flex: 1,
+    paddingLeft: 40,
+    paddingBottom: 20,
+    backgroundColor: "#1975D2",
+    flexDirection: "row",
+    alignContent: "space-between",
+  },
+  header3: {
+    flex: 1,
+    paddingLeft: 16,
+    justifyContent: "center",
+    // paddingBottom: 100,
+    backgroundColor: "#1975D2",
+    flexDirection: "row",
+  },
+  viewBtns: {
+    flexDirection: "row",
+    padding: 20,
+  },
+  authorName: {
+    color: "#fff",
+    paddingTop: -30,
+    paddingBottom: 10,
   },
   capa: {
     width: 200,
@@ -212,16 +353,27 @@ const styles = StyleSheet.create({
     margin: 20,
     borderRadius: 15,
   },
-  titulo: {
+  bookName: {
     color: "#fff",
     fontSize: 30,
     fontWeight: "bold",
     margin: 8,
+    marginLeft: -2,
+    marginTop: 50,
+    marginBottom: 1,
     // height: 100,
     // width: 100
   },
-  informacoes: {
+  info: {
     color: "#fff",
+    paddingBottom: 10,
+  },
+  info2: {
+    color: "#000",
+    fontWeight: "bold",
+    padding: 10,
+    backgroundColor: "#D9D9D9",
+    borderRadius: 10,
   },
   descricao: {
     padding: 20,
@@ -245,6 +397,8 @@ const styles = StyleSheet.create({
     width: 200,
     borderRadius: 10,
     fontWeight: "normal",
+    justifyContent: "center",
+    alignItems: "center",
   },
   botaoAdd: {
     backgroundColor: "#104C87",
@@ -257,6 +411,9 @@ const styles = StyleSheet.create({
   modalContainer: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  modalHeader: {
+    alignContent: "flex-end",
   },
   conteudoModal: {
     backgroundColor: "white",
@@ -279,6 +436,34 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 16,
   },
+  btnStatus: {
+    backgroundColor: "#104C87",
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  btnStatusText: {
+    color: "#fff",
+  },
+  customRatingBarStyle: {
+    justifyContent: "center",
+    flexDirection: "row",
+    marginTop: 30,
+  },
+  starImgStyle: {
+    width: 40,
+    height: 40,
+    resizeMode: "cover",
+  },
+  inputReview: {
+    width: 350,
+    height: 100,
+    paddingLeft: 10,
+    backgroundColor: '#7BAFE3',
+    borderRadius: 20,
+    color: '#000'
+  }
 });
 
 export default DetalhesLivro;
