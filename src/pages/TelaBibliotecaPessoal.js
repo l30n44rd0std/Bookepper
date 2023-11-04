@@ -1,4 +1,3 @@
-import "react-native-gesture-handler";
 import { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -10,41 +9,68 @@ import {
   StyleSheet,
   StatusBar,
   ToastAndroid,
-  Modal,
   Pressable,
 } from "react-native";
+
+import "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
-import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
-import { Entypo } from "@expo/vector-icons";
 
-import { getUserLibrary } from "../BookStorage";
-import { removeBookFromLibrary } from "../BookStorage";
+import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+
+import { getUserLibrary, updateBookInLibrary } from "../BookStorage";
+import { removeBookFromLibrary } from "../BookStorage";
+import handleVerificationExistingBook from "../utils/handleVerificationExistingBook";
+import { TextInput } from "react-native-gesture-handler";
 
 const BibliotecaPessoal = () => {
-  const [statusBook, setStatusBook] = useState("lendo");
+  const [status, setStatus] = useState("Indefinido");
   const [filter, setFilter] = useState("all");
   const [userBooks, setUserBooks] = useState([]);
+  const [bookModal, setBookModal] = useState({});
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null); // Armazena o livro selecionado para edição
 
+  const [defaultRating, setDefaultRating] = useState(2); //useState para avaliação
+  const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]); //usado para percorrer e descobrir avaliação
+  const starImgFilled =
+    "https://github.com/tranhonghan/images/blob/main/star_filled.png?raw=true";
+  const starImgCorner =
+    "https://github.com/tranhonghan/images/blob/main/star_corner.png?raw=true";
+
+  const CustomRatingBar = () => {
+    return (
+      <View style={styles.customRatingBarStyle}>
+        {maxRating.map((item, key) => {
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              key={item}
+              onPress={() => setDefaultRating(item)}
+            >
+              <Image
+                style={styles.starImgStyle}
+                source={
+                  item <= defaultRating
+                    ? { uri: starImgFilled }
+                    : { uri: starImgCorner }
+                }
+              />
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  };
+
   const navigation = useNavigation();
-
-  useEffect(() => {
-    async function fetchUserLibrary() {
-      const books = await getUserLibrary();
-      console.log("Na TelaBibliotecaPessoal, books é: ", books);
-      setUserBooks(books);
-      // console.log('Na TelaBibliotecaPessoal, userBooks é: ', userBooks)
-    }
-
-    fetchUserLibrary();
-  }, []);
 
   const getImageSource = (item) => {
     // console.log('Na TelaBibliotecaPessoal, dentro de getImageSource, item é: ', item);
@@ -57,7 +83,7 @@ const BibliotecaPessoal = () => {
 
   const getColorForStatus = (status) => {
     switch (status) {
-      case "ja_li":
+      case "lido":
       case "já li":
       case "Já Li":
       case "finalizado":
@@ -80,8 +106,10 @@ const BibliotecaPessoal = () => {
   const filteredBooks = userBooks.filter((book) => {
     if (filter === "all") {
       return true;
+    } else if (book.status && book.status.toLowerCase() === filter.toLowerCase()) {
+      return true;
     }
-    return book === filter;
+    return false;
   });
 
   const handleInfoBook = (item) => {
@@ -116,11 +144,52 @@ const BibliotecaPessoal = () => {
 
   const bottomSheetModalRef = useRef(null);
   const snapPoints = ["25%", "48%", "75%"];
-  function handlePresentModal() {
+
+  function handlePresentModal(id) {
+    userBooks.forEach((book) => {
+      if (book.google_id === id) {
+        setBookModal(book);
+      }
+    });
+
     bottomSheetModalRef.current?.present();
   }
 
-  const setStatus = () => {};
+  async function handleChangeValuesBook(book, status, rating) {
+    console.log(book);
+    handleVerificationExistingBook();
+    return "";
+  }
+
+  function handleChangeStatus(newStatusModal) {
+    console.log('Status anterior é :', bookModal.status)
+    setBookModal({
+      ...bookModal,
+      status: newStatusModal,
+    })
+    console.log('newStatusModal: ', newStatusModal, 'e bookModal.status: ', bookModal.status)
+  }
+
+  function addOrChangeBook () {
+
+    console.log('bookmodal: ', bookModal);
+    const google_id = bookModal.google_id;
+    const newStatus = bookModal.status;
+    const newRating = bookModal.avaliacao;
+
+    updateBookInLibrary(google_id, newStatus, newRating)
+  }
+
+  useEffect(() => {
+    async function fetchUserLibrary() {
+      const books = await getUserLibrary();
+      console.log("Na TelaBibliotecaPessoal, books é: ", books);
+      setUserBooks(books);
+      // console.log('Na TelaBibliotecaPessoal, userBooks é: ', userBooks)
+    }
+
+    fetchUserLibrary();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -144,6 +213,13 @@ const BibliotecaPessoal = () => {
             <Text style={styles.textBtnFilters}>Todos</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            style={[styles.btnFilters, { width: 80 }]}
+            onPress={() => setFilter("lido")}
+          >
+            <Text style={styles.textBtnFilters}>Lido</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={styles.btnFilters}
             onPress={() => setFilter("lendo")}
           >
@@ -151,13 +227,7 @@ const BibliotecaPessoal = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.btnFilters, { width: 80 }]}
-            onPress={() => setFilter("finalizado")}
-          >
-            <Text style={styles.textBtnFilters}>Finalizado</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.btnFilters, { width: 80 }]}
-            onPress={() => setFilter("quero_ler")}
+            onPress={() => setFilter("quero ler")}
           >
             <Text style={styles.textBtnFilters}>Quero ler</Text>
           </TouchableOpacity>
@@ -198,7 +268,9 @@ const BibliotecaPessoal = () => {
                   >
                     <Text style={styles.textBtnInfo}>+Info</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handlePresentModal()}>
+                  <TouchableOpacity
+                    onPress={() => handlePresentModal(item.google_id)}
+                  >
                     <Text
                       style={[
                         styles.status,
@@ -210,6 +282,7 @@ const BibliotecaPessoal = () => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => handleRemoveBook(item.google_id)}
+                    style={{ paddingLeft: 15 }}
                   >
                     <FontAwesomeIcon name="trash" size={24} color="blue" />
                   </TouchableOpacity>
@@ -228,16 +301,16 @@ const BibliotecaPessoal = () => {
       )}
 
       <BottomSheetModalProvider>
-        <View>
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            index={0}
-            snapPoints={snapPoints}
-            backgroundgrounStyle={{
-              backgroundColor: "#104C87",
-              borderRadius: 50,
-            }}
-          >
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={0}
+          snapPoints={snapPoints}
+          backgroundStyle={{
+            // backgroundColor: "#104C87",
+            borderRadius: 50,
+          }}
+        >
+          <ScrollView>
             <View
               style={{ flex: 1, alignItems: "center", paddingHorizontal: 15 }}
             >
@@ -245,61 +318,65 @@ const BibliotecaPessoal = () => {
                 style={{
                   fontWeight: "900",
                   letterSpacing: 0.5,
-                  fontSize: 16,
-                  marginBottom: 20,
+                  fontSize: 25,
+                  marginBottom: 1,
                 }}
               >
                 Editar info do livro
               </Text>
-              <View style= {{ flexDirection: 'column', alignItems: 'center', width: "100%", justifyContent: "space-between" }}>
-                <Text>Livro selecionado: 1984</Text>
-               <Text style={{ color:"#101318", fontSize: 14, fontWeight: "bold" }}>STATUS</Text>
-               </View>
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  width: "100%",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text
+                  style={{ fontSize: 20, paddingBottom: 10, marginBottom: 25 }}
+                >
+                  {bookModal.titulo}
+                </Text>
+                <Text style={styles.topicModal}>
+                  STATUS: {bookModal.status}
+                </Text>
+              </View>
 
-              <Pressable style={styles.row} onPress={() => setStatus("lendo")}>
+              <TouchableOpacity style={styles.row} onPress={() => handleChangeStatus('Lendo')}>
                 <Text style={styles.subtitle}>Lendo</Text>
-                {statusBook === "lendo" ? (
+                {bookModal.status == "Lendo" ? (
                   <AntDesign name="checkcircle" size={24} color="#4A98E9" />
                 ) : (
                   <Entypo name="circle" size={24} color="#56636F" />
                 )}
-              </Pressable>
+              </TouchableOpacity>
 
-              <Pressable
-                style={styles.row}
-                onPress={() => setStatus("finalizado")}
-              >
+              <TouchableOpacity style={styles.row} onPress={() => handleChangeStatus('Finalizado')}>
                 <Text style={styles.subtitle}>Finalizado</Text>
-                {statusBook === "finalizado" ? (
+                {bookModal.status == "Finalizado" ? (
                   <AntDesign name="checkcircle" size={24} color="#4A98E9" />
                 ) : (
                   <Entypo name="circle" size={24} color="#56636F" />
                 )}
-              </Pressable>
+              </TouchableOpacity>
 
-              <Pressable
-                style={styles.row}
-                onPress={() => setStatus("quero_ler")}
-              >
+              <TouchableOpacity style={styles.row} onPress={() => handleChangeStatus('Quero Ler')}>
                 <Text style={styles.subtitle}>Quero ler</Text>
-                {statusBook === "quero_ler" ? (
+                {bookModal.status == "Quero Ler" ? (
                   <AntDesign name="checkcircle" size={24} color="#4A98E9" />
                 ) : (
                   <Entypo name="circle" size={24} color="#56636F" />
                 )}
-              </Pressable>
+              </TouchableOpacity>
 
-              <Pressable
-                style={styles.row}
-                onPress={() => setStatus("abandonado")}
-              >
+              <TouchableOpacity style={styles.row} onPress={() => handleChangeStatus('Abandonado')}>
                 <Text style={styles.subtitle}>Abandonado</Text>
-                {statusBook === "abandonado" ? (
+                {bookModal.status == "Abandonado" ? (
                   <AntDesign name="checkcircle" size={24} color="#4A98E9" />
                 ) : (
                   <Entypo name="circle" size={24} color="#56636F" />
                 )}
-              </Pressable>
+              </TouchableOpacity>
 
               <View
                 style={{
@@ -309,9 +386,50 @@ const BibliotecaPessoal = () => {
                   marginVertical: 30,
                 }}
               ></View>
+
+              <View>
+                <Text style={styles.topicModal}> Avaliação </Text>
+                <View style={{ margin: 0, padding: 0, alignItems: "center" }}>
+                  <CustomRatingBar />
+                  <Text style={{ color: "#000" }}>
+                    {" "}
+                    {defaultRating + " / " + maxRating.length}{" "}
+                  </Text>
+                </View>
+              </View>
+
+              <View
+                style={{
+                  width: "100%",
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                  borderBottomColor: "black",
+                  marginVertical: 30,
+                }}
+              ></View>
+
+              <View style={styles.viewBookReview}>
+                <Text style={styles.topicModal}>Resenha</Text>
+
+                <Text>{bookModal.review}</Text>
+              </View>
+
+              <View>
+                <TouchableOpacity
+                  style={[
+                    styles.btnStatus,
+                    { marginTop: 40, backgroundColor: "#104C87" },
+                  ]}
+                  onPress={addOrChangeBook}
+                >
+                  <Text style={styles.btnStatusText}>
+                    {" "}
+                    Adicionar ou alterar livro{" "}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </BottomSheetModal>
-        </View>
+          </ScrollView>
+        </BottomSheetModal>
       </BottomSheetModalProvider>
     </View>
   );
@@ -408,6 +526,38 @@ const styles = StyleSheet.create({
   },
   notFoundOrEmpty: {
     color: "#fff",
+  },
+  btnStatus: {
+    backgroundColor: "#104C87",
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  btnStatusText: {
+    color: "#fff",
+  },
+  customRatingBarStyle: {
+    justifyContent: "center",
+    flexDirection: "row",
+    marginTop: 30,
+  },
+  starImgStyle: {
+    width: 40,
+    height: 40,
+    resizeMode: "cover",
+  },
+  topicModal: {
+    color: "#101318",
+    fontSize: 17,
+    fontWeight: "bold",
+  },
+  inputReview: {
+    width: 450,
+    height: 100,
+    backgroundColor: "#7BAFE3",
+    borderRadius: 20,
+    color: "#000",
   },
 });
 
