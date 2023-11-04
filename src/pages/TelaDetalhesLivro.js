@@ -71,7 +71,7 @@ const DetalhesLivro = ({ route }) => {
         .catch((error) => console.error(error));
     };
     if (!book) carregarLivro();
-  }, [book]);
+  }, [book, googleId]);
 
   const handleAmazonLink = () => {
     const formattedTitle = book.title.replace(/ /g, "+");
@@ -79,25 +79,6 @@ const DetalhesLivro = ({ route }) => {
 
     Linking.openURL(amazonLink);
   };
-
-  // const handleAdicionarNaLivraria = async (status) => {
-  //   console.log("entrou na handleAdicionarNaLivraria");
-  //   setShowDialog(false);
-  //   setReadingStatus(status);
-
-  //     const newBook = {
-  //       imagem_capa: book?.volumeInfo.imageLinks.thumbnail,
-  //       titulo: book?.volumeInfo.title,
-  //       autor: book?.volumeInfo.authors,
-  //       usuario_id: user.id,
-  //       google_id: googleId,
-  //       status: readingStatus,
-  //     };
-  //     console.log("TelaDetalhesLivro book", book);
-  //     console.log("TelaDetalhesLivro newBook", newBook);
-
-  //     await addBookToLibrary(newBook);
-  // };
 
   const handleAlterarStatus = async (status) => {
     setReadingStatus(status);
@@ -186,10 +167,9 @@ const DetalhesLivro = ({ route }) => {
             </Text>
           </View>
 
-          <View style={styles.header3}>
             <View style={styles.viewBtns}>
               <TouchableOpacity
-                style={styles.botaoAmazon}
+                style={[styles.botaoAmazon]}
                 onPress={handleAmazonLink}
               >
                 <Text style={{ color: "#fff" }}>Ver na loja da Amazon</Text>
@@ -201,7 +181,6 @@ const DetalhesLivro = ({ route }) => {
                 <Ionicons name="add" size={24} color="white" />
               </TouchableOpacity>
             </View>
-          </View>
 
           <View style={styles.descricao}>
             <Text style={styles.descricaoTitulo}>Descrição</Text>
@@ -227,10 +206,10 @@ const DetalhesLivro = ({ route }) => {
                   <Text style={styles.subtituloModal}>Status da leitura:</Text>
                   <View style={styles.botoesModal}>
                     <TouchableOpacity
-                      onPress={() => handleAlterarStatus("Já li")}
+                      onPress={() => handleAlterarStatus("Lido")}
                       style={styles.btnStatus}
                     >
-                      <Text style={styles.btnStatusText}>Já Li</Text>
+                      <Text style={styles.btnStatusText}>Lido</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => handleAlterarStatus("Lendo")}
@@ -322,30 +301,31 @@ const styles = StyleSheet.create({
     backgroundColor: "#1975D2",
     flexDirection: "row",
   },
+  viewInfoAuthor: {
+    flex: 1
+  },
   header2: {
     flex: 1,
     paddingLeft: 40,
     paddingBottom: 20,
     backgroundColor: "#1975D2",
     flexDirection: "row",
-    alignContent: "space-between",
+    justifyContent: "space-between",
+    paddingRight: 50
   },
-  header3: {
+
+  viewBtns: {
     flex: 1,
-    paddingLeft: 16,
-    justifyContent: "center",
-    // paddingBottom: 100,
     backgroundColor: "#1975D2",
     flexDirection: "row",
-  },
-  viewBtns: {
-    flexDirection: "row",
     padding: 20,
+    justifyContent: "space-evenly"
   },
   authorName: {
     color: "#fff",
     paddingTop: -30,
     paddingBottom: 10,
+    fontWeight: 'bold'
   },
   capa: {
     width: 200,
@@ -361,8 +341,6 @@ const styles = StyleSheet.create({
     marginLeft: -2,
     marginTop: 50,
     marginBottom: 1,
-    // height: 100,
-    // width: 100
   },
   info: {
     color: "#fff",
@@ -387,11 +365,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 8,
   },
-  // informacoes: {
-  //   fontSize: 16,
-  //   fontWeight: "bold",
-  //   marginTop: 8,
-  // },
   botaoAmazon: {
     backgroundColor: "#104C87",
     width: 200,
@@ -411,9 +384,11 @@ const styles = StyleSheet.create({
   modalContainer: {
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 25
   },
   modalHeader: {
-    alignContent: "flex-end",
+    flexDirection: "row",
+    justifyContent: "space-between" 
   },
   conteudoModal: {
     backgroundColor: "white",
