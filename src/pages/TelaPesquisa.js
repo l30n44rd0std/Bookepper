@@ -20,6 +20,12 @@ const TelaPesquisa = () => {
 
   const maxLength = 30;
   const authorMaxLength = 50;
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + "...";
+    }
+    return text;
+  };
 
   const searchBooks = () => {
     setShowDefaultBooks(false);
@@ -48,8 +54,8 @@ const TelaPesquisa = () => {
   };
 
   const handleDefaultBookPress = (googleId) => {
-    navigation.navigate("TelaDetalhesLivro", googleId);
-  }
+    navigation.navigate("TelaDetalhesLivro", { googleId });
+  };  
   
   const handleClearBtn = () => {
     setQuery("");
@@ -117,7 +123,7 @@ const TelaPesquisa = () => {
           contentContainerStyle={styles.listaResultado}
           renderItem={({ item, index }) => (
             <TouchableOpacity key={index} onPress={() => handleBookPress(item)}>
-              <View style={{ marginBottom: 16 }}>
+              <View style={{ marginBottom: 16, flex: 1, padding: 10 }}>
                 {item.volumeInfo.imageLinks && item.volumeInfo.imageLinks.thumbnail ? (
                   <Image
                     source={{ uri: item.volumeInfo.imageLinks.thumbnail }}
@@ -130,26 +136,27 @@ const TelaPesquisa = () => {
                   />
                 )}
                 <Text style={{ color: "#fff", fontWeight: "bold" }}>
-                  {item.volumeInfo.title}
+                  {truncateText(item.volumeInfo.title, maxLength)}
                 </Text>
                 <Text style={{ color: "#fff" }}>
-                  {item.volumeInfo.authors?.join(", ")}
+                  {item.volumeInfo.authors
+                    ? truncateText(item.volumeInfo.authors.join(", "), authorMaxLength)
+                    : "Autor desconhecido"}
                 </Text>
               </View>
             </TouchableOpacity>
           )}
         />          
         {bookData && bookData.length === 0 && (
-          <Text style={{ color: "#fff" }}>Nenhum livro encontrado.</Text>
+          <View style={{ flex: 1, alignItems: "center", justifyContent: "center", marginTop: -600 }}>
+            <Text style={{ color: "#fff", fontSize: 15 }}>Nenhum livro encontrado.</Text>
+          </View>
         )}
         {showDefaultBooks && (
             <ScrollView>
             <View style={styles.viewTopics}>
               <View style={styles.viewTopic}>
                 <Text style={styles.topicName}>Autoajuda</Text>
-                <TouchableOpacity>
-                  <Text style={styles.verMais}>Ver mais</Text>
-                </TouchableOpacity>
               </View>
               <ScrollView horizontal>
                 <View style={styles.horizontalBook}>
@@ -164,7 +171,7 @@ const TelaPesquisa = () => {
                 </View>
 
                 <View style={styles.horizontalBook}>
-                  <TouchableOpacity onPress={ () => handleDefaultBookPress('aizjDQAAQBAJ')}>
+                  <TouchableOpacity onPress={ () => handleDefaultBookPress('-1_8wAEACAAJ')}>
                     <Image
                       source={require('../imgs_books/pairico.jpg')}
                       style={styles.imgBookTopics}
@@ -175,7 +182,7 @@ const TelaPesquisa = () => {
                 </View>
 
                 <View style={styles.horizontalBook}>
-                  <TouchableOpacity onPress={ () => handleDefaultBookPress('aizjDQAAQBAJ')}>
+                  <TouchableOpacity onPress={ () => handleDefaultBookPress('a6CXtAEACAAJ')}>
                     <Image
                       source={require('../imgs_books/sutilarte.jpg')}
                       style={styles.imgBookTopics}
@@ -189,13 +196,10 @@ const TelaPesquisa = () => {
 
               <View style={[styles.viewTopic, {paddingTop: 30}]}>
                 <Text style={styles.topicName}>Romance</Text>
-                <TouchableOpacity> 
-                  <Text style={styles.verMais}>Ver mais</Text> 
-                </TouchableOpacity>
               </View>
               <ScrollView horizontal>
                 <View style={styles.horizontalBook}>
-                  <TouchableOpacity onPress={ () => handleDefaultBookPress('aizjDQAAQBAJ')}>
+                  <TouchableOpacity onPress={ () => handleDefaultBookPress('OQn0zwEACAAJ')}>
                     <Image
                       source={require('../imgs_books/orgulho-e-preconceito.jpg')}
                       style={styles.imgBookTopics}
@@ -206,18 +210,18 @@ const TelaPesquisa = () => {
                 </View>
 
                 <View style={styles.horizontalBook}>
-                  <TouchableOpacity onPress={ () => handleDefaultBookPress('aizjDQAAQBAJ')}>
+                  <TouchableOpacity onPress={ () => handleDefaultBookPress('RODKzwEACAAJ')}>
                     <Image
                       source={require('../imgs_books/assim-que-comeca.jpg')}
                       style={styles.imgBookTopics}
                     />
                   </TouchableOpacity>
-                  <Text style={styles.nameBookTopic} ellipsizeMode="tail" numberOfLines={1}>É assim que começa (Vol. 2 É assim que acaba)</Text>
+                  <Text style={styles.nameBookTopic}>{truncateText("É assim que começa (Vol. 2 É assim que acaba)", maxLength)}</Text>
                   <Text style={styles.nameAuthorTopic}>Colleen Hoover</Text>
                 </View>
 
                 <View style={styles.horizontalBook}>
-                  <TouchableOpacity onPress={ () => handleDefaultBookPress('aizjDQAAQBAJ')}>
+                  <TouchableOpacity onPress={ () => handleDefaultBookPress('dXGnEAAAQBAJ')}>
                     <Image
                       source={require('../imgs_books/morro-dos-ventos-uivantes.jpg')}
                       style={styles.imgBookTopics}
@@ -231,35 +235,32 @@ const TelaPesquisa = () => {
 
               <View style={[styles.viewTopic, {paddingTop: 30}]}>
                 <Text style={styles.topicName}>Fantasia</Text>
-                <TouchableOpacity>
-                  <Text style={styles.verMais}>Ver mais</Text>
-                </TouchableOpacity>
               </View>
               <ScrollView horizontal>
                 <View style={styles.horizontalBook}>
-                  <TouchableOpacity onPress={ () => handleDefaultBookPress('aizjDQAAQBAJ')}>
+                  <TouchableOpacity onPress={ () => handleDefaultBookPress("R7KuDwAAQBAJ")}>
                     <Image
                       source={require('../imgs_books/senhor-dos-aneis.jpg')}
                       style={styles.imgBookTopics}
                     />
                   </TouchableOpacity>
-                  <Text style={styles.nameBookTopic}>O Senhor dos Anéis: A Sociedade do Anel</Text>
+                  <Text style={styles.nameBookTopic}>{truncateText("O Senhor dos Anéis: A Sociedade do Anel", maxLength)}</Text>
                   <Text style={styles.nameAuthorTopic}>J.R.R. Tolkien</Text>
                 </View>
 
                 <View style={styles.horizontalBook}>
-                  <TouchableOpacity onPress={ () => handleDefaultBookPress('aizjDQAAQBAJ')}>
+                  <TouchableOpacity onPress={ () => handleDefaultBookPress('rkr7zwEACAAJ')}>
                     <Image
                       source={require('../imgs_books/harry-potter.jpg')}
                       style={styles.imgBookTopics}
                     />
                   </TouchableOpacity>
-                  <Text style={styles.nameBookTopic}>Harry Potter e a Pedra Filosofal: 1</Text>
+                  <Text style={styles.nameBookTopic}>{truncateText("Harry Potter e a Pedra Filosofal: 1", maxLength)}</Text>
                   <Text style={styles.nameAuthorTopic}>J.K. Rowling</Text>
                 </View>
 
                 <View style={styles.horizontalBook}>
-                  <TouchableOpacity onPress={ () => handleDefaultBookPress('aizjDQAAQBAJ')}>
+                  <TouchableOpacity onPress={ () => handleDefaultBookPress('L-ErEAAAQBAJ')}>
                     <Image
                       source={require('../imgs_books/1984.jpg')}
                       style={styles.imgBookTopics}
@@ -326,6 +327,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 40,
     paddingLeft: 10,
+    paddingTop: 30
   },
   verMais: {
     color: '#ffff',
@@ -346,6 +348,7 @@ const styles = StyleSheet.create({
     fontWeight: "200"
   },
   horizontalBook: {
+    flex: 1,
     paddingRight: 20
   }
 });
