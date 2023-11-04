@@ -1,13 +1,17 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Avatar, Button, Text, IconButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import requestsUser from "../api/requests/user";
-
+// import requestsUser from "../api/requests/user";
 import { useUserContext } from "../UserContext";
+// import ImagePicker, { openPicker } from 'react-native-image-crop-picker';
+import * as ImagePicker from 'expo-image-picker';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const TelaPerfil = () => {
   const { user } = useUserContext();
+  const [profilePhoto, setProfilePhoto] = useState('');
+  const defaultImg= 'https://cdn3.iconfinder.com/data/icons/web-design-and-development-2-6/512/87-1024.png';
 
   // const loadPerfil = async () => {
   //   try {
@@ -35,30 +39,54 @@ const TelaPerfil = () => {
     // ...
   };
 
+  const handleImagePicker = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      aspect: [4, 4],
+      allowsEditing: true,
+      base64: true,
+      quality: 1
+    });
+
+    if(!result.canceled) {
+      // console.log(result.assets[0].uri);
+      setProfilePhoto(result.assets[0].uri);
+    }
+  }
+
   // useEffect(() => {
   //   loadPerfil();
   // }, []);
 
+  // const imagePick = () => {
+  //   ImagePicker.openPicker({
+  //     width: 400,
+  //     height: 400,
+  //     cropping: true
+  //   }).then(image => {
+  //     console.log(image);
+  //     setProfilePhoto(image.path);
+  //   }).catch(error => {
+  //     console.error('Erro ao selecionar uma imagem: ', error)
+  //   });
+  // };
+
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <Avatar.Image source={require("../icons/clicia.jpg")} size={200} />
+        <View style={styles.photoProfile}>
+          {profilePhoto ? (
+          <Image style={styles.img} source={ {uri:profilePhoto}} />
+          ) : (
+            <Image style={styles.img} source={ {uri:'https://cdn3.iconfinder.com/data/icons/web-design-and-development-2-6/512/87-1024.png'}} />
+          )}
+
+          <TouchableOpacity onPress={handleImagePicker} style={{ alignItems:'flex-end', top: -10 }}>
+            <Entypo name="pencil" size={20} color={"#0000ff"}/>
+          </TouchableOpacity>
+
+        </View>
         <Text style={styles.nome}>{user.username}</Text>
         <Text style={styles.email}>{user.email}</Text>
-        <IconButton
-          icon="pencil"
-          mode="contained"
-          size={20}
-          onPress={handleEditProfile}
-        />
-        <View
-          style={{
-            width: "100%",
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            borderBottomColor: "white",
-            marginVertical: 30,
-          }}>
-        </View>
       </View>
 
       <Button
@@ -111,6 +139,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontWeight: "normal",
   },
+  img: {
+    width: 300,
+    height: 300,
+    borderRadius: 150
+  }
 });
 
 export default TelaPerfil;
