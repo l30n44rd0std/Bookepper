@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { View, Image, StyleSheet, Text, TextInput, TouchableOpacity, ToastAndroid } from "react-native";
+import { View, Image, StyleSheet, Text, TextInput, TouchableOpacity, ToastAndroid, ScrollView } from "react-native";
 
 import requestsUser from "../api/requests/user";
-import { useUserContext } from '../UserContext';
+import { useUserContext } from '../contexts/UserContext';
 
 export default function TelaEditarInfo () {
+
+  const { user } = useUserContext();
+  const [profilePhoto, setProfilePhoto] = useState('');
 
   const { updateUser } = useUserContext();
   const [username, setUsername] = useState('');
@@ -55,17 +58,35 @@ export default function TelaEditarInfo () {
     }
   }
 
+  // const handleImagePicker = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     aspect: [4, 4],
+  //     allowsEditing: true,
+  //     base64: true,
+  //     quality: 1
+  //   });
+  
+  //   if (!result.canceled) {
+  //     setProfilePhoto(result.assets[0].uri);
+  //     // setUserProfile({ imageUri: result.assets[0].uri });
+  //     // setUserProfile({ imageUri: result.assets[0].uri });
+  //     console.log(result.assets[0].uri)
+  //     // console.log('userProfile: ', userProfile);
+  //     console.log('profilePhoto: ', profilePhoto);
+  //   }
+  // }
+
   return (
     <View style={styles.container}>
+      <ScrollView>
+        
       <View style={styles.viewFotoPerfil}>
-        <TouchableOpacity style={styles.clicarFotoPerfil}>
-          <View style={styles.grayOverlay}>
-            <Text style={styles.alterarFotoText}>Alterar Foto</Text>
-          </View>
-            <Image 
-            style={styles.fotoPerfil}
-            source={require('../icons/clicia.jpg')}
-            />
+        <TouchableOpacity>
+          {profilePhoto ? (
+          <Image style={styles.fotoPerfil} source={ {uri:profilePhoto}} />
+          ) : (
+            <Image style={styles.fotoPerfil } source={ {uri:'https://cdn3.iconfinder.com/data/icons/web-design-and-development-2-6/512/87-1024.png'}} />
+          )}
         </TouchableOpacity>
       </View>
 
@@ -102,10 +123,11 @@ export default function TelaEditarInfo () {
             </View>
           </View>
 
-        <TouchableOpacity style={styles.btnSalvar} onPress={handleUpdate}>
-            <Text style={styles.btnSalvarText}>Salvar Informações</Text>
-        </TouchableOpacity>
+              <TouchableOpacity style={styles.btnSalvar} onPress={handleUpdate}>
+                  <Text style={styles.btnSalvarText}>Salvar Informações</Text>
+              </TouchableOpacity>
 
+      </ScrollView>
     </View>
   );
 };
@@ -115,22 +137,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#1975D2",
+    alignItems: "center",
+    justifyContent: "center",
   },
   viewFotoPerfil: {
     alignItems: "center",
     justifyContent: "center",
-    margin: 80
-  },
-  alterarFotoText: {
-    position: "absolute"
-  },
-  grayOverlay:{
-    position: "absolute",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    width: 300,
-    height: 300,
-    justifyContent: "center",
-    alignItems: "center"
+    margin: 80,
+    marginBottom: 10
   },
   fotoPerfil: {
     borderRadius: 200,
@@ -166,8 +180,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 400,
     height: 35,
-    margin: 180,
-    marginLeft: 30
+    // margin: 180,
+    // marginLeft: 30
   },
   btnSalvarText: {
     color: '#fff',

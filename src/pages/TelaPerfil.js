@@ -3,13 +3,17 @@ import { Avatar, Button, Text, IconButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 // import requestsUser from "../api/requests/user";
-import { useUserContext } from "../UserContext";
+import { useUserContext } from "../contexts/UserContext";
 // import ImagePicker, { openPicker } from 'react-native-image-crop-picker';
-import * as ImagePicker from 'expo-image-picker';
+// import * as ImagePicker from 'expo-image-picker';
 import Entypo from 'react-native-vector-icons/Entypo';
+
+// import { useUserProfile } from '../contexts/UserProfileContext';
 
 const TelaPerfil = () => {
   const { user } = useUserContext();
+  // const { userProfile, setUserProfile } = useUserProfile();
+
   const [profilePhoto, setProfilePhoto] = useState('');
   const defaultImg= 'https://cdn3.iconfinder.com/data/icons/web-design-and-development-2-6/512/87-1024.png';
 
@@ -39,19 +43,23 @@ const TelaPerfil = () => {
     // ...
   };
 
-  const handleImagePicker = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      aspect: [4, 4],
-      allowsEditing: true,
-      base64: true,
-      quality: 1
-    });
-
-    if(!result.canceled) {
-      // console.log(result.assets[0].uri);
-      setProfilePhoto(result.assets[0].uri);
-    }
-  }
+  // const handleImagePicker = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     aspect: [4, 4],
+  //     allowsEditing: true,
+  //     base64: true,
+  //     quality: 1
+  //   });
+  
+  //   if (!result.canceled) {
+  //     setProfilePhoto(result.assets[0].uri);
+  //     setUserProfile({ imageUri: result.assets[0].uri });
+  //     // setUserProfile({ imageUri: result.assets[0].uri });
+  //     console.log(result.assets[0].uri)
+  //     // console.log('userProfile: ', userProfile);
+  //     console.log('profilePhoto: ', profilePhoto);
+  //   }
+  // }
 
   // useEffect(() => {
   //   loadPerfil();
@@ -80,7 +88,7 @@ const TelaPerfil = () => {
             <Image style={styles.img} source={ {uri:'https://cdn3.iconfinder.com/data/icons/web-design-and-development-2-6/512/87-1024.png'}} />
           )}
 
-          <TouchableOpacity onPress={handleImagePicker} style={{ alignItems:'flex-end', top: -10 }}>
+          <TouchableOpacity onPress={handleEditProfile} style={{ alignItems:'flex-end', top: -10 }}>
             <Entypo name="pencil" size={20} color={"#0000ff"}/>
           </TouchableOpacity>
 
@@ -97,8 +105,8 @@ const TelaPerfil = () => {
         Ir para biblioteca pessoal
       </Button>
 
-      <Button mode="contained" onPress={handleLogout} style={styles.button}>
-        Sair da conta
+      <Button mode="contained" onPress={handleEditProfile} style={styles.button}>
+        Editar informações
       </Button>
     </View>
   );

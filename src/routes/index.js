@@ -1,5 +1,5 @@
 import AppNavigator from "./AppNavigator";
-import { UserProvider } from "../UserContext";
+import { UserProvider } from "../contexts/UserContext";
 
 //---------------------------------------------------------------------------
 import { useEffect, useState } from "react";
@@ -107,7 +107,7 @@ export default function App() {
   if (showHome) {
     return (
       <UserProvider>
-        <AppNavigator />
+          <AppNavigator />
       </UserProvider>
     );
   } else {

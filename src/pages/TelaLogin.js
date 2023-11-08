@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import requestsUser from "../api/requests/user";
-import { useUserContext } from '../UserContext';
+import { useUserContext } from '../contexts/UserContext';
 
 export default function TelaLogin() {
   //criando estados p/ e-mail e senha

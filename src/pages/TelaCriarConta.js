@@ -11,7 +11,7 @@ import {
 
 import { useNavigation } from "@react-navigation/native";
 import requestsUser from "../api/requests/user";
-import { useUserContext } from '../UserContext';
+import { useUserContext } from '../contexts/UserContext';
 
 export default function TelaCriarConta() {
 

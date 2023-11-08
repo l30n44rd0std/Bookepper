@@ -27,9 +27,12 @@ import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import { getUserLibrary, updateBookInLibrary } from "../BookStorage";
 import { removeBookFromLibrary } from "../BookStorage";
 import handleVerificationExistingBook from "../utils/handleVerificationExistingBook";
-import { TextInput } from "react-native-gesture-handler";
+// import { useUserProfile } from '../contexts/UserProfileContext';
 
 const BibliotecaPessoal = () => {
+  
+  // const { userProfile } = useUserProfile();
+
   const [status, setStatus] = useState("Indefinido");
   const [filter, setFilter] = useState("all");
   const [userBooks, setUserBooks] = useState([]);
@@ -198,11 +201,7 @@ const BibliotecaPessoal = () => {
         {/* style={{flexDirection: "row"}} */}
         <View>
           <Text style={styles.headerTitle}>Meus Livros</Text>
-
-          <Image
-            source={require("../icons/clicia.jpg")}
-            style={styles.iconUserPhoto}
-          />
+            <Image style={styles.iconUserPhoto} source={ {uri:'https://cdn3.iconfinder.com/data/icons/web-design-and-development-2-6/512/87-1024.png'}} />
         </View>
 
         <ScrollView horizontal style={styles.filters}>

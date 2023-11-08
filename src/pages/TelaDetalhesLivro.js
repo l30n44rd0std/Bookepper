@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { addBookToLibrary } from "../BookStorage";
-import { useUserContext } from "../UserContext";
+import { useUserContext } from "../contexts/UserContext";
 
 import { useNavigation } from "@react-navigation/native";
 
