@@ -4,7 +4,7 @@ import { ScrollView } from "react-native-gesture-handler";
 
 const TelaAutor = ({ route }) => {
   const { authorName } = route.params || {};
-  console.log(authorName);
+  // console.log(authorName);
   const [authorData, setAuthorData] = useState(null);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const TelaAutor = ({ route }) => {
       .then((response) => response.json())
       .then((data) => {
         setAuthorData(data);
-        console.log(authorData);
+        // console.log(authorData);
       })
       .catch((error) => console.error(error));
   }, [authorName]);
