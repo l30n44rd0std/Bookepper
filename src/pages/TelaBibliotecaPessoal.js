@@ -90,6 +90,7 @@ const BibliotecaPessoal = () => {
       case "já li":
       case "Já Li":
       case "finalizado":
+      case "Finalizado":
         return "#0ABA31"; //Verde
       case "lendo":
       case "Lendo":
@@ -159,18 +160,18 @@ const BibliotecaPessoal = () => {
   }
 
   async function handleChangeValuesBook(book, status, rating) {
-    console.log(book);
+    // console.log(book);
     handleVerificationExistingBook();
     return "";
   }
 
   function handleChangeStatus(newStatusModal) {
-    console.log('Status anterior é :', bookModal.status)
+    // console.log('Status anterior é :', bookModal.status)
     setBookModal({
       ...bookModal,
       status: newStatusModal,
     })
-    console.log('newStatusModal: ', newStatusModal, 'e bookModal.status: ', bookModal.status)
+    // console.log('newStatusModal: ', newStatusModal, 'e bookModal.status: ', bookModal.status)
   }
 
   function addOrChangeBook () {
@@ -186,7 +187,7 @@ const BibliotecaPessoal = () => {
   useEffect(() => {
     async function fetchUserLibrary() {
       const books = await getUserLibrary();
-      console.log("Na TelaBibliotecaPessoal, books é: ", books);
+      // console.log("Na TelaBibliotecaPessoal, books é: ", books);
       setUserBooks(books);
       // console.log('Na TelaBibliotecaPessoal, userBooks é: ', userBooks)
     }
@@ -201,7 +202,6 @@ const BibliotecaPessoal = () => {
         {/* style={{flexDirection: "row"}} */}
         <View>
           <Text style={styles.headerTitle}>Meus Livros</Text>
-            <Image style={styles.iconUserPhoto} source={ {uri:'https://cdn3.iconfinder.com/data/icons/web-design-and-development-2-6/512/87-1024.png'}} />
         </View>
 
         <ScrollView horizontal style={styles.filters}>
@@ -213,9 +213,9 @@ const BibliotecaPessoal = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.btnFilters, { width: 80 }]}
-            onPress={() => setFilter("lido")}
+            onPress={() => setFilter("Finalizado")}
           >
-            <Text style={styles.textBtnFilters}>Lido</Text>
+            <Text style={styles.textBtnFilters}>Finalizado</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
