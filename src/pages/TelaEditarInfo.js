@@ -180,11 +180,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 400,
     height: 35,
-    // margin: 180,
-    // marginLeft: 30
+    marginLeft: 25
   },
   btnSalvarText: {
     color: '#fff',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   }
 });

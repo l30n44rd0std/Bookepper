@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 // import requestsUser from "../api/requests/user";
 import { useUserContext } from "../contexts/UserContext";
 // import ImagePicker, { openPicker } from 'react-native-image-crop-picker';
-// import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import Entypo from 'react-native-vector-icons/Entypo';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // import { useUserProfile } from '../contexts/UserProfileContext';
 
@@ -43,23 +44,32 @@ const TelaPerfil = () => {
     // ...
   };
 
-  // const handleImagePicker = async () => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     aspect: [4, 4],
-  //     allowsEditing: true,
-  //     base64: true,
-  //     quality: 1
-  //   });
+  const handleImagePicker = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      aspect: [4, 4],
+      allowsEditing: true,
+      base64: true,
+      quality: 1
+    });
   
-  //   if (!result.canceled) {
-  //     setProfilePhoto(result.assets[0].uri);
-  //     setUserProfile({ imageUri: result.assets[0].uri });
-  //     // setUserProfile({ imageUri: result.assets[0].uri });
-  //     console.log(result.assets[0].uri)
-  //     // console.log('userProfile: ', userProfile);
-  //     console.log('profilePhoto: ', profilePhoto);
-  //   }
-  // }
+    if (!result.canceled) {
+      await AsyncStorage.setItem("imageProfile", result.assets[0].uri)
+      setProfilePhoto(result.assets[0].uri);
+      // setUserProfile({ imageUri: result.assets[0].uri });
+      console.log(result);
+      console.log(result.assets[0].uri)
+      console.log('profilePhoto: ', profilePhoto);
+    }
+  }
+
+  useEffect(() => {
+    (async() =>{
+      await AsyncStorage.getItem("imageProfile").then( (image) => {
+        console.log("uri image",image)
+        setProfilePhoto(image)
+      })
+    } )()
+  },[])
 
   // useEffect(() => {
   //   loadPerfil();
@@ -88,7 +98,7 @@ const TelaPerfil = () => {
             <Image style={styles.img} source={ {uri:'https://cdn3.iconfinder.com/data/icons/web-design-and-development-2-6/512/87-1024.png'}} />
           )}
 
-          <TouchableOpacity onPress={handleEditProfile} style={{ alignItems:'flex-end', top: -10 }}>
+          <TouchableOpacity onPress={handleImagePicker} style={{ alignItems:'flex-end', top: -10 }}>
             <Entypo name="pencil" size={20} color={"#0000ff"}/>
           </TouchableOpacity>
 

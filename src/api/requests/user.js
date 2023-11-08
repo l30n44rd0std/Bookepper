@@ -1,6 +1,6 @@
 const { default: axios } = require("axios");
 
-const apiUrl = "http://192.168.1.104:3005/user";
+const apiUrl = "http://10.220.30.147:3005/user";
 
 const requestsUser = {
     async login ({username, email, password}){
